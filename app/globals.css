@@ -2,66 +2,98 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #070810;
-  --foreground: #f8fafc;
-  --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --accent-purple: #8b5cf6;
-  --accent-orange: #f97316;
+@layer base {
+  :root {
+    --color-primary: 204 85 0;
+    --color-secondary: 184 75 0;
+    --color-accent: 224 105 20;
+
+    /* Dark theme (default) */
+    --background: 7 8 16;
+    --background-secondary: 17 18 30;
+    --surface: 24 25 40;
+    --surface-elevated: 30 32 50;
+    --foreground: 248 250 252;
+    --text-secondary: 148 163 184;
+    --text-muted: 100 116 139;
+    --border-color: 255 255 255;
+    --border-opacity: 0.08;
+
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+
+    --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  /* Light theme overrides */
+  .light {
+    --background: 252 252 253;
+    --background-secondary: 243 244 246;
+    --surface: 237 238 242;
+    --surface-elevated: 229 230 235;
+    --foreground: 15 17 26;
+    --text-secondary: 71 85 105;
+    --text-muted: 148 163 184;
+    --border-color: 0 0 0;
+    --border-opacity: 0.09;
+  }
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+html.light {
+  color-scheme: light;
+}
+
+html:not(.light) {
   color-scheme: dark;
 }
 
 body {
-  background-color: #070810;
-  color: #f8fafc;
+  background-color: rgb(var(--background));
+  color: rgb(var(--foreground));
   font-family: var(--font-sans);
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Custom modern scrollbar */
-::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
-}
-::-webkit-scrollbar-track {
-  background: #070810;
-}
-::-webkit-scrollbar-thumb {
-  background: #1e2030;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #313550;
-}
+/* Custom scrollbar — dark */
+:not(.light) ::-webkit-scrollbar { width: 7px; height: 7px; }
+:not(.light) ::-webkit-scrollbar-track { background: rgb(var(--background)); }
+:not(.light) ::-webkit-scrollbar-thumb { background: rgb(var(--surface-elevated)); border-radius: 4px; }
+:not(.light) ::-webkit-scrollbar-thumb:hover { background: rgb(var(--surface)); }
 
-/* theaethersync.com styling utilities */
+/* Custom scrollbar — light */
+.light ::-webkit-scrollbar { width: 7px; height: 7px; }
+.light ::-webkit-scrollbar-track { background: rgb(var(--background-secondary)); }
+.light ::-webkit-scrollbar-thumb { background: rgb(var(--surface-elevated)); border-radius: 4px; }
+.light ::-webkit-scrollbar-thumb:hover { background: rgb(var(--surface)); }
+
+/* Aether utilities */
 .aether-gradient-text {
-  background: linear-gradient(135deg, #ffffff 20%, #c084fc 60%, #f97316 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: rgb(var(--color-primary));
 }
 
 .aether-card {
-  background: linear-gradient(180deg, rgba(17, 18, 30, 0.75) 0%, rgba(9, 10, 18, 0.85) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgb(var(--background-secondary));
+  border: 1px solid rgba(var(--border-color) / var(--border-opacity));
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
 }
 
 .aether-card:hover {
-  border-color: rgba(139, 92, 246, 0.35);
-  box-shadow: 0 12px 40px -10px rgba(139, 92, 246, 0.15);
+  border-color: rgba(var(--color-primary) / 0.35);
+  box-shadow: 0 12px 40px -10px rgba(var(--color-primary) / 0.12);
 }
 
 .aether-grid {
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-image:
+    linear-gradient(to right, rgba(var(--border-color) / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--border-color) / 0.04) 1px, transparent 1px);
   background-size: 50px 50px;
 }
 
@@ -70,4 +102,17 @@ body {
   border-radius: 50%;
   filter: blur(130px);
   pointer-events: none;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+@keyframes shimmer {
+  100% { transform: translateX(200%); }
 }

@@ -92,20 +92,20 @@ const featureDetails = [
 
 export default function FeaturesPage() {
   return (
-    <div className="relative min-h-screen bg-[#070810] text-white">
+    <div className="relative min-h-screen bg-background text-foreground">
       <Navbar />
 
       {/* Hero Header */}
       <section className="relative pt-36 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
-        <div className="glow-orb top-20 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-purple-600/15" />
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/25 text-purple-300 text-xs font-semibold mb-4">
+        <div className="glow-orb top-20 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-primary/15" />
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/10 border border-primary/25 text-primary text-xs font-semibold mb-4">
           <Zap size={13} />
           <span>Complete Feature Guide</span>
         </div>
-        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white leading-tight">
+        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-foreground leading-tight">
           Everything You Need for <span className="aether-gradient-text">Autonomous Engineering</span>
         </h1>
-        <p className="mt-4 text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+        <p className="mt-4 text-base sm:text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">
           Deep architectural review of the capabilities powering AetherSync AI IDE and Desktop Agent.
         </p>
       </section>
@@ -122,24 +122,24 @@ export default function FeaturesPage() {
               >
                 <div>
                   <div className="flex items-center justify-between mb-5">
-                    <div className="w-12 h-12 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                    <div className="w-12 h-12 rounded-xl bg-primary/15 border border-primary/30 flex items-center justify-center text-primary">
                       <Icon size={24} />
                     </div>
-                    <span className="text-[10px] font-mono font-semibold px-2.5 py-1 rounded-full bg-white/[0.05] text-purple-300 border border-white/[0.08]">
+                    <span className="text-[10px] font-mono font-semibold px-2.5 py-1 rounded-full bg-surface text-primary border border-border">
                       {feat.badge}
                     </span>
                   </div>
 
-                  <h2 className="text-xl font-bold text-white mb-3">{feat.title}</h2>
-                  <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-normal mb-6">
+                  <h2 className="text-xl font-bold text-foreground mb-3">{feat.title}</h2>
+                  <p className="text-xs sm:text-sm text-text-secondary leading-relaxed font-normal mb-6">
                     {feat.desc}
                   </p>
                 </div>
 
-                <div className="pt-5 border-t border-white/[0.06] space-y-2">
+                <div className="pt-5 border-t border-border space-y-2">
                   {feat.bullets.map((b, i) => (
-                    <div key={i} className="flex items-center gap-2 text-xs text-slate-300">
-                      <CheckCircle2 size={13} className="text-purple-400 shrink-0" />
+                    <div key={i} className="flex items-center gap-2 text-xs text-text-secondary">
+                      <CheckCircle2 size={13} className="text-primary shrink-0" />
                       <span>{b}</span>
                     </div>
                   ))}
