@@ -9,48 +9,49 @@ import {
 
 export function LiveIDEApp() {
   return (
-    <div className="w-[1250px] h-[750px] bg-[#0c0c0c] rounded-xl shadow-lift flex flex-col font-sans text-gray-300 border border-white/10 overflow-hidden cursor-auto select-auto">
+    <div className="w-[1250px] h-[750px] bg-[var(--ide-bg)] rounded-xl shadow-2xl flex flex-col font-sans text-[var(--ide-text)] border border-[var(--ide-border)] overflow-hidden cursor-auto select-none transition-colors duration-200">
+      
       {/* Top Electron Title Bar */}
-      <div className="h-10 w-full bg-[#0c0c0c] border-b border-white/5 flex items-center justify-between px-3 select-none shrink-0">
+      <div className="h-10 w-full bg-[var(--ide-header)] border-b border-[var(--ide-border)] flex items-center justify-between px-3 select-none shrink-0">
         
         {/* Left: Brand & Tabs */}
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 text-primary font-bold text-sm">
-             <div className="w-5 h-5 bg-primary text-[#0c0c0c] rounded flex items-center justify-center text-xs">A</div>
-             Aether Sync
+             <div className="w-5 h-5 bg-primary text-black rounded flex items-center justify-center text-xs">A</div>
+             <span className="text-[var(--ide-text-bright)]">Aether Sync</span>
           </div>
           <div className="flex items-center text-xs">
-            <div className="flex items-center gap-1.5 px-3 py-1 text-gray-400 hover:text-white transition-colors cursor-pointer border-r border-white/10">
+            <div className="flex items-center gap-1.5 px-3 py-1 text-[var(--ide-text-dim)] hover:text-[var(--ide-text-bright)] transition-colors cursor-pointer border-r border-[var(--ide-border)]">
               <MessageSquare size={13} /> Chat
             </div>
-            <div className="flex items-center gap-1.5 px-3 py-1 text-primary bg-white/5 transition-colors cursor-pointer border-r border-white/10">
+            <div className="flex items-center gap-1.5 px-3 py-1 text-primary bg-primary/10 transition-colors cursor-pointer border-r border-[var(--ide-border)] font-semibold">
               <Layout size={13} /> IDE
             </div>
-            <div className="flex items-center gap-1.5 px-3 py-1 text-gray-400 hover:text-white transition-colors cursor-pointer">
+            <div className="flex items-center gap-1.5 px-3 py-1 text-[var(--ide-text-dim)] hover:text-[var(--ide-text-bright)] transition-colors cursor-pointer">
               <Bot size={13} /> Agent
             </div>
           </div>
         </div>
         
         {/* Center: Search Bar */}
-        <div className="absolute left-1/2 -translate-x-1/2 flex items-center bg-[#1a1a1a] border border-white/10 rounded-md px-3 py-1 w-96 text-xs text-gray-400 cursor-text">
+        <div className="absolute left-1/2 -translate-x-1/2 flex items-center bg-[var(--ide-sidebar)] border border-[var(--ide-border)] rounded-md px-3 py-1 w-96 text-xs text-[var(--ide-text-dim)] cursor-text shadow-sm">
           <Search size={13} className="mr-2 opacity-50" />
           <span className="flex-1">Search files, symbols & commands...</span>
           <span className="opacity-40 text-[10px]">Ctrl+P</span>
         </div>
         
         {/* Right: Model & Window Controls */}
-        <div className="flex items-center gap-4 text-xs text-gray-400">
-          <div className="flex items-center gap-1.5 hover:text-white cursor-pointer">
-            Model: <span className="text-gray-300">none configured</span> <ChevronDown size={12} />
+        <div className="flex items-center gap-4 text-xs text-[var(--ide-text-dim)]">
+          <div className="flex items-center gap-1.5 hover:text-[var(--ide-text-bright)] cursor-pointer">
+            Model: <span className="text-[var(--ide-text-bright)] font-semibold">Claude 3.7 Sonnet</span> <ChevronDown size={12} />
           </div>
-          <div className="flex items-center gap-1.5 hover:text-white cursor-pointer mr-2">
+          <div className="flex items-center gap-1.5 hover:text-[var(--ide-text-bright)] cursor-pointer mr-2">
             <Terminal size={13} /> Terminal
           </div>
-          <div className="flex items-center gap-3 ml-2 border-l border-white/10 pl-4">
-            <Minus size={14} className="hover:text-white cursor-pointer" />
-            <Square size={12} className="hover:text-white cursor-pointer" />
-            <X size={14} className="hover:text-white cursor-pointer" />
+          <div className="flex items-center gap-3 ml-2 border-l border-[var(--ide-border)] pl-4">
+            <Minus size={14} className="hover:text-[var(--ide-text-bright)] cursor-pointer" />
+            <Square size={12} className="hover:text-[var(--ide-text-bright)] cursor-pointer" />
+            <X size={14} className="hover:text-red-400 cursor-pointer" />
           </div>
         </div>
       </div>
@@ -59,213 +60,184 @@ export function LiveIDEApp() {
       <div className="flex flex-1 overflow-hidden">
         
         {/* Far Left Sidebar (App Nav) */}
-        <div className="w-60 bg-[#0c0c0c] border-r border-white/5 flex flex-col shrink-0 p-3">
-          <div className="flex items-center gap-3 mb-4 pl-1 mt-1">
-            <div className="w-7 h-7 bg-primary text-[#0c0c0c] rounded-md flex items-center justify-center font-bold text-sm shadow-lg shadow-primary/20">A</div>
-            <div className="leading-tight">
-              <div className="text-white font-bold text-sm tracking-tight">aethersync</div>
-              <div className="text-[9px] text-gray-500 font-bold tracking-widest uppercase">Desktop</div>
-            </div>
-          </div>
-
-          <button className="w-full bg-primary hover:bg-[#ff8642] text-[#0c0c0c] text-sm font-bold py-2 rounded-lg flex items-center justify-center gap-2 mb-6 transition-colors">
-            <Plus size={16} /> New Chat
-          </button>
-
-          <div className="flex flex-col gap-1 mb-6">
-            <div className="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg cursor-pointer transition-colors text-sm">
-              <MessageSquare size={16} /> Simple Chat
-            </div>
-            <div className="flex items-center gap-3 px-3 py-2 text-white bg-white/5 rounded-lg cursor-pointer transition-colors text-sm">
-              <Layout size={16} className="text-primary" /> IDE Workspace
-            </div>
-            <div className="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg cursor-pointer transition-colors text-sm">
-              <Code2 size={16} /> Coding Agent
-            </div>
-          </div>
-
-          <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest px-3 mb-2">Chats</div>
-          <div className="px-3 mb-4">
-            <div className="bg-[#1a1a1a] rounded-md px-2.5 py-1.5 flex items-center text-xs border border-white/5">
-              <Search size={12} className="text-gray-500 mr-2" />
-              <input type="text" placeholder="Search chats..." className="bg-transparent border-none outline-none text-white placeholder-gray-600 w-full" />
-            </div>
-          </div>
-          <div className="px-3 text-xs text-gray-500 italic">No chats yet</div>
-
-          <div className="mt-auto flex flex-col gap-1 border-t border-white/5 pt-2">
-            <div className="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg cursor-pointer transition-colors text-sm">
-              <Folder size={16} /> Open Project
-            </div>
-            <div className="flex items-center gap-3 px-3 py-2 text-white bg-white/5 rounded-lg cursor-pointer transition-colors text-sm">
-              <Settings size={16} className="text-primary" /> Settings
-            </div>
-            <div className="flex items-center justify-between px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg cursor-pointer transition-colors text-sm">
-              <div className="flex items-center gap-3"><Moon size={16} /> Dark Mode</div>
-              <div className="text-[10px] bg-[#1a1a1a] px-1.5 py-0.5 rounded border border-white/10">Dark</div>
-            </div>
-            <div className="flex items-center justify-between px-3 py-2 mt-2 border-t border-white/5 cursor-pointer hover:bg-white/5 rounded-lg">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-orange-900 text-orange-200 flex items-center justify-center text-xs font-bold border border-orange-700">R</div>
-                <div className="leading-tight">
-                  <div className="text-xs text-white font-medium">Roxan Usman</div>
-                  <div className="text-[10px] text-gray-500">roxanusman@gmail.com</div>
-                </div>
+        <div className="w-60 bg-[var(--ide-sidebar)] border-r border-[var(--ide-border)] flex flex-col shrink-0 p-3 justify-between">
+          <div>
+            <div className="flex items-center gap-3 mb-4 pl-1 mt-1">
+              <div className="w-7 h-7 bg-primary text-black rounded-md flex items-center justify-center font-bold text-sm shadow-md shadow-primary/20">A</div>
+              <div className="leading-tight">
+                <div className="text-[var(--ide-text-bright)] font-bold text-sm tracking-tight">aethersync</div>
+                <div className="text-[9px] text-primary font-bold tracking-widest uppercase">Desktop</div>
               </div>
+            </div>
+
+            <button className="w-full bg-primary hover:bg-[#ff8642] text-black text-sm font-bold py-2 rounded-lg flex items-center justify-center gap-2 mb-4 transition-colors shadow-sm">
+              <Plus size={16} /> New Chat
+            </button>
+
+            <div className="flex flex-col gap-1 mb-4">
+              <div className="flex items-center gap-3 px-3 py-2 text-[var(--ide-text-dim)] hover:text-[var(--ide-text-bright)] hover:bg-black/5 rounded-lg cursor-pointer transition-colors text-xs">
+                <MessageSquare size={15} /> Simple Chat
+              </div>
+              <div className="flex items-center gap-3 px-3 py-2 text-primary bg-primary/10 border border-primary/20 font-semibold rounded-lg cursor-pointer transition-colors text-xs">
+                <Layout size={15} /> IDE Workspace
+              </div>
+              <div className="flex items-center gap-3 px-3 py-2 text-[var(--ide-text-dim)] hover:text-[var(--ide-text-bright)] hover:bg-black/5 rounded-lg cursor-pointer transition-colors text-xs">
+                <Code2 size={15} /> Coding Agent
+              </div>
+            </div>
+
+            <div className="text-[10px] font-bold text-[var(--ide-text-dim)] uppercase tracking-widest px-3 mb-2">Chats</div>
+            <div className="px-3 mb-2">
+              <div className="bg-[var(--ide-bg)] rounded-md px-2.5 py-1.5 flex items-center text-xs border border-[var(--ide-border)]">
+                <Search size={12} className="text-[var(--ide-text-dim)] mr-2" />
+                <input type="text" placeholder="Search chats..." className="bg-transparent border-none outline-none text-[var(--ide-text-bright)] placeholder-[var(--ide-text-dim)] w-full text-[11px]" />
+              </div>
+            </div>
+            <div className="px-3 text-[11px] text-[var(--ide-text-dim)] italic">No chats yet</div>
+          </div>
+
+          <div className="flex flex-col gap-1 border-t border-[var(--ide-border)] pt-2 text-xs">
+            <div className="flex items-center gap-3 px-3 py-1.5 text-[var(--ide-text-dim)] hover:text-[var(--ide-text-bright)] rounded-lg cursor-pointer">
+              <Folder size={15} className="text-primary" /> Open Project
+            </div>
+            <div className="flex items-center gap-3 px-3 py-1.5 text-[var(--ide-text-dim)] hover:text-[var(--ide-text-bright)] rounded-lg cursor-pointer">
+              <Settings size={15} /> Settings
+            </div>
+            <div className="flex items-center justify-between px-3 py-1.5 text-[var(--ide-text-dim)]">
+              <span className="flex items-center gap-2"><Moon size={14} /> Theme</span>
+              <span className="text-[10px] bg-black/10 px-1.5 py-0.5 rounded text-[var(--ide-text-bright)] font-mono">Auto</span>
             </div>
           </div>
         </div>
 
-        {/* IDE Explorer Sidebar */}
-        <div className="w-56 bg-[#121212] border-r border-white/5 flex flex-col shrink-0">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-white/5">
-            <span className="text-[10px] font-bold text-gray-400 tracking-wider">EXPLORER &middot; ASYNC</span>
-            <div className="flex gap-2 text-gray-500">
-               <Plus size={12} className="hover:text-white cursor-pointer" />
+        {/* Explorer Sidebar */}
+        <div className="w-52 bg-[var(--ide-sidebar)] border-r border-[var(--ide-border)] flex flex-col shrink-0">
+          <div className="h-9 px-3 border-b border-[var(--ide-border)] flex items-center justify-between text-xs font-bold text-[var(--ide-text-bright)]">
+            <span className="uppercase tracking-wider text-[10px] text-[var(--ide-text-dim)]">Explorer</span>
+            <div className="flex items-center gap-2 text-[var(--ide-text-dim)]">
+              <Plus size={13} className="hover:text-[var(--ide-text-bright)] cursor-pointer" />
+              <Folder size={13} className="hover:text-[var(--ide-text-bright)] cursor-pointer" />
             </div>
           </div>
-          
-          <div className="flex-1 overflow-y-auto py-2 text-xs text-gray-400 no-scrollbar">
-            <div className="px-2 py-1 flex items-center gap-1.5 hover:bg-white/5 cursor-pointer">
-              <Search size={14} className="text-gray-500" />
-              <input type="text" placeholder="Find file..." className="bg-transparent outline-none border-none placeholder-gray-600 w-full" />
+
+          <div className="p-2 flex flex-col gap-1 text-xs">
+            <div className="flex items-center gap-1.5 font-bold text-[var(--ide-text-bright)] px-1 py-1 cursor-pointer">
+              <ChevronDown size={14} />
+              <Folder size={14} className="text-primary fill-primary/20" />
+              <span>aethersync-core</span>
             </div>
             
-            <div className="mt-2 space-y-[1px]">
-               <div className="px-2 py-1 flex items-center gap-1.5 hover:bg-white/5 cursor-pointer pl-6">
-                 <FileCode size={13} className="text-gray-500" /> <span>check-routes.mjs</span>
-               </div>
-               <div className="px-2 py-1 flex items-center gap-1.5 hover:bg-white/5 cursor-pointer pl-6">
-                 <FileCode size={13} className="text-gray-500" /> <span>check-schema.mjs</span>
-               </div>
-               <div className="px-2 py-1 flex items-center gap-1.5 hover:bg-white/5 cursor-pointer pl-6">
-                 <FileCode size={13} className="text-gray-500" /> <span>eval.mjs</span>
-               </div>
-               <div className="px-2 py-1 flex items-center gap-1.5 hover:bg-white/5 cursor-pointer pl-6">
-                 <FileCode size={13} className="text-gray-500" /> <span>find-overflow.mjs</span>
-               </div>
-               
-               <div className="px-2 py-1 flex items-center gap-1.5 hover:bg-white/5 cursor-pointer mt-2 text-white">
-                 <ChevronDown size={14} /> <Folder size={13} className="text-primary" /> <span>src</span>
-               </div>
-               <div className="px-2 py-1 flex items-center gap-1.5 hover:bg-white/5 cursor-pointer pl-6">
-                 <ChevronRight size={14} /> <Folder size={13} className="text-gray-500" /> <span>assets</span>
-               </div>
-               <div className="px-2 py-1 flex items-center gap-1.5 hover:bg-white/5 cursor-pointer pl-6">
-                 <ChevronRight size={14} /> <Folder size={13} className="text-gray-500" /> <span>components</span>
-               </div>
-               <div className="px-2 py-1 flex items-center gap-1.5 hover:bg-white/5 cursor-pointer pl-6">
-                 <ChevronDown size={14} /> <Folder size={13} className="text-primary" /> <span className="text-white">hooks</span>
-               </div>
-               <div className="px-2 py-1 flex items-center gap-1.5 hover:bg-white/5 cursor-pointer pl-10">
-                 <FileCode size={13} className="text-blue-400" /> <span>usePageMeta.ts</span>
-               </div>
-               <div className="px-2 py-1 flex items-center gap-1.5 bg-white/10 text-white cursor-pointer pl-10 border-l-2 border-primary">
-                 <FileCode size={13} className="text-blue-400" /> <span>useReducedMotion.ts</span>
-               </div>
-               <div className="px-2 py-1 flex items-center gap-1.5 hover:bg-white/5 cursor-pointer pl-10">
-                 <FileCode size={13} className="text-blue-400" /> <span>useSmoothScroll.ts</span>
-               </div>
+            <div className="pl-4 flex flex-col gap-1 text-[var(--ide-text)] text-[11.5px]">
+              <div className="flex items-center gap-1.5 px-1.5 py-1 text-[var(--ide-text-dim)] hover:text-[var(--ide-text-bright)] cursor-pointer">
+                <ChevronRight size={12} /> <Folder size={13} className="text-amber-500/80" /> src
+              </div>
+              <div className="flex items-center gap-1.5 px-1.5 py-1 text-[var(--ide-text-dim)] hover:text-[var(--ide-text-bright)] cursor-pointer">
+                <ChevronRight size={12} /> <Folder size={13} className="text-blue-500/80" /> agent
+              </div>
+              <div className="flex items-center gap-1.5 px-1.5 py-1 bg-primary/10 text-primary font-semibold rounded cursor-pointer border border-primary/20">
+                <FileCode size={13} /> useReducedMotion.ts
+              </div>
+              <div className="flex items-center gap-1.5 px-1.5 py-1 text-[var(--ide-text-dim)] hover:text-[var(--ide-text-bright)] cursor-pointer">
+                <FileCode size={13} /> app-context.tsx
+              </div>
+              <div className="flex items-center gap-1.5 px-1.5 py-1 text-[var(--ide-text-dim)] hover:text-[var(--ide-text-bright)] cursor-pointer">
+                <FileCode size={13} /> package.json
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Main Center Area (Editor + Terminal) */}
-        <div className="flex-1 flex flex-col bg-[#0f0f0f] relative min-w-0">
+        {/* Center Monaco Editor & Terminal */}
+        <div className="flex-1 flex flex-col overflow-hidden bg-[var(--ide-code-bg)]">
           
-          {/* Editor Tabs */}
-          <div className="flex items-center border-b border-white/5 bg-[#121212] overflow-x-auto no-scrollbar">
-            <div className="flex items-center gap-2 px-4 py-2.5 border-r border-white/5 text-xs text-gray-500 hover:text-gray-300 cursor-pointer min-w-max">
-              <FileCode size={13} /> og-image.png <X size={12} className="ml-2 hover:bg-white/10 rounded" />
+          {/* Editor Tab Bar */}
+          <div className="h-9 bg-[var(--ide-header)] border-b border-[var(--ide-border)] flex items-center px-2 gap-1 shrink-0">
+            <div className="flex items-center gap-2 px-3 h-full bg-[var(--ide-code-bg)] border-t-2 border-primary text-xs font-semibold text-[var(--ide-text-bright)]">
+              <FileCode size={13} className="text-primary" />
+              <span>useReducedMotion.ts</span>
+              <X size={12} className="opacity-50 hover:opacity-100 cursor-pointer ml-1" />
             </div>
-            <div className="flex items-center gap-2 px-4 py-2.5 bg-[#0f0f0f] border-t-2 border-t-primary text-xs text-white cursor-pointer min-w-max">
-              <FileCode size={13} className="text-blue-400" /> useReducedMotion.ts <X size={12} className="ml-2 hover:bg-white/10 rounded" />
+            <div className="flex items-center gap-2 px-3 h-full text-xs text-[var(--ide-text-dim)] hover:text-[var(--ide-text-bright)] cursor-pointer">
+              <FileCode size={13} />
+              <span>app-context.tsx</span>
             </div>
           </div>
 
-          {/* Editor Content */}
-          <div className="flex-1 overflow-y-auto p-4 font-mono text-[13px] leading-relaxed text-gray-300 no-scrollbar relative selection:bg-primary/30">
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">1</span><span className="text-pink-400">import</span> {'{'} <span className="text-blue-300">useEffect</span>, <span className="text-blue-300">useState</span> {'}'} <span className="text-pink-400">from</span> <span className="text-green-300">'react'</span>;</div>
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">2</span></div>
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">3</span><span className="text-gray-500">/**</span></div>
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">4</span><span className="text-gray-500"> * Tracks the OS reduced-motion preference and keeps up with live changes</span></div>
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">5</span><span className="text-gray-500"> */</span></div>
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">6</span><span className="text-pink-400">export function</span> <span className="text-yellow-200">useReducedMotion</span>(): <span className="text-blue-400">boolean</span> {'{'}</div>
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">7</span>  <span className="text-pink-400">const</span> [reduced, setReduced] = <span className="text-yellow-200">useState</span>(() <span className="text-pink-400">{'=>'}</span> {'{'}</div>
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">8</span>    <span className="text-pink-400">if</span> (<span className="text-blue-400">typeof</span> window <span className="text-pink-400">===</span> <span className="text-green-300">'undefined'</span> || !window.<span className="text-blue-300">matchMedia</span>) <span className="text-pink-400">return false</span>;</div>
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">9</span>    <span className="text-pink-400">return</span> window.<span className="text-blue-300">matchMedia</span>(<span className="text-green-300">'(prefers-reduced-motion: reduce)'</span>).matches;</div>
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">10</span>  {'}'});</div>
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">11</span></div>
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">12</span>  <span className="text-yellow-200">useEffect</span>(() <span className="text-pink-400">{'=>'}</span> {'{'}</div>
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">13</span>    <span className="text-pink-400">if</span> (!window.<span className="text-blue-300">matchMedia</span>) <span className="text-pink-400">return</span>;</div>
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">14</span>    <span className="text-pink-400">const</span> query = window.<span className="text-blue-300">matchMedia</span>(<span className="text-green-300">'(prefers-reduced-motion: reduce)'</span>);</div>
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">15</span>    <span className="text-pink-400">const</span> onChange = (e: <span className="text-blue-400">MediaQueryListEvent</span>) <span className="text-pink-400">{'=>'}</span> <span className="text-yellow-200">setReduced</span>(e.matches);</div>
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">16</span></div>
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">17</span>    query.<span className="text-yellow-200">addEventListener</span>(<span className="text-green-300">'change'</span>, onChange);</div>
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">18</span>    <span className="text-pink-400">return</span> () <span className="text-pink-400">{'=>'}</span> query.<span className="text-yellow-200">removeEventListener</span>(<span className="text-green-300">'change'</span>, onChange);</div>
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">19</span>  {'}'}, []);</div>
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">20</span></div>
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">21</span>  <span className="text-pink-400">return</span> reduced;</div>
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">22</span>{'}'}</div>
-            <div className="flex"><span className="w-8 text-right pr-4 text-gray-600 select-none">23</span></div>
+          {/* Code Body */}
+          <div className="flex-1 p-4 font-mono text-[11.5px] leading-relaxed overflow-y-auto no-scrollbar text-[var(--ide-text)]">
+            <div className="flex gap-4">
+              <div className="select-none text-[var(--ide-text-dim)] opacity-40 text-right pr-2 border-r border-[var(--ide-border)]">
+                <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div>
+              </div>
+              <div className="flex-1">
+                <div><span className="text-purple-400 font-semibold">import</span> &#123; useEffect, useState &#125; <span className="text-purple-400 font-semibold">from</span> <span className="text-emerald-500">'react'</span>;</div>
+                <div className="text-[var(--ide-text-dim)] italic mt-1">// Tracks the OS reduced-motion preference in real-time</div>
+                <div><span className="text-purple-400 font-semibold">export function</span> <span className="text-amber-400 font-bold">useReducedMotion</span>(): <span className="text-blue-400">boolean</span> &#123;</div>
+                <div className="pl-4"><span className="text-purple-400 font-semibold">const</span> [reduced, setReduced] = <span className="text-amber-400">useState</span>(<span className="text-blue-400">false</span>);</div>
+                <div className="pl-4 mt-1"><span className="text-purple-400 font-semibold">useEffect</span>(() =&gt; &#123;</div>
+                <div className="pl-8"><span className="text-purple-400 font-semibold">const</span> media = window.<span className="text-amber-400">matchMedia</span>(<span className="text-emerald-500">'(prefers-reduced-motion: reduce)'</span>);</div>
+                <div className="pl-8"><span className="text-amber-400">setReduced</span>(media.matches);</div>
+                <div className="pl-4">&#125;, []);</div>
+                <div className="pl-4 mt-1"><span className="text-purple-400 font-semibold">return</span> reduced;</div>
+                <div>&#125;</div>
+              </div>
+            </div>
           </div>
 
-          {/* Bottom Terminal */}
-          <div className="h-56 bg-[#0c0c0c] border-t border-white/5 flex flex-col">
-             <div className="flex items-center gap-4 px-4 py-2 border-b border-white/5 text-xs">
-               <div className="text-white border-b border-primary pb-1 flex items-center gap-2">
-                 <Terminal size={13} /> bash (Async) <X size={12} className="ml-1 opacity-50 hover:opacity-100 cursor-pointer" />
-               </div>
-               <div className="text-gray-500 hover:text-white cursor-pointer"><Plus size={13} /></div>
-             </div>
-             <div className="flex-1 p-3 font-mono text-[11px] text-gray-300 overflow-y-auto no-scrollbar">
-               <div className="text-gray-400 mb-2">- bash [/home/usman/Music/Async] -</div>
-               <div className="flex">
-                 <span className="text-green-400 mr-2">usman@OptiPlex:~/Music/Async$</span>
-                 <input type="text" className="flex-1 bg-transparent border-none outline-none text-gray-300" />
-               </div>
-             </div>
+          {/* Integrated PTY Terminal */}
+          <div className="h-44 bg-[var(--ide-bg)] border-t border-[var(--ide-border)] flex flex-col shrink-0">
+            <div className="h-8 px-3 border-b border-[var(--ide-border)] flex items-center justify-between text-xs text-[var(--ide-text-dim)] bg-[var(--ide-header)]">
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-[var(--ide-text-bright)] flex items-center gap-1.5"><Terminal size={12} className="text-primary" /> bash (aethersync)</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-success inline-block" />
+              </div>
+              <Plus size={13} className="hover:text-[var(--ide-text-bright)] cursor-pointer" />
+            </div>
+            <div className="flex-1 p-3 font-mono text-[11px] text-[var(--ide-text)] overflow-y-auto no-scrollbar">
+              <div className="text-[var(--ide-text-dim)] mb-1">- bash [/home/usman/Music/Async/aethersync-core] -</div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-emerald-500 font-semibold">usman@OptiPlex:~/aethersync$</span>
+                <span className="text-primary font-bold">npm run build:agent</span>
+              </div>
+              <div className="text-[var(--ide-text-dim)] mt-1">✓ Agent core runtime compiled successfully (2.1s)</div>
+              <div className="flex items-center gap-1.5 mt-1">
+                <span className="text-emerald-500 font-semibold">usman@OptiPlex:~/aethersync$</span>
+                <span className="w-2 h-3.5 bg-primary animate-pulse inline-block" />
+              </div>
+            </div>
           </div>
+
         </div>
 
-        {/* Far Right Sidebar (AI Assistant) */}
-        <div className="w-64 bg-[#121212] border-l border-white/5 flex flex-col shrink-0">
-           <div className="flex items-center justify-between px-4 py-3 border-b border-white/5">
-             <div className="flex items-center gap-2 text-xs font-bold text-primary">
-               <Bot size={14} /> AI ASSISTANT
-             </div>
-             <div className="flex gap-2">
-               <Minus size={13} className="text-gray-500 hover:text-white cursor-pointer" />
-               <X size={13} className="text-gray-500 hover:text-white cursor-pointer" />
-             </div>
-           </div>
-           
-           <div className="p-3">
-             <div className="flex items-center gap-2 bg-[#1a1a1a] rounded-lg p-1 border border-white/5">
-               <button className="flex-1 text-[10px] py-1.5 text-white bg-white/10 rounded-md font-medium">Explain File</button>
-               <button className="flex-1 text-[10px] py-1.5 text-gray-400 hover:text-white rounded-md transition-colors">Write Tests</button>
-               <button className="flex-1 text-[10px] py-1.5 text-gray-400 hover:text-white rounded-md transition-colors">Review Code</button>
-             </div>
-           </div>
-           
-           <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
-              <div className="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center mb-4">
-                <Bot size={24} className="text-gray-500" />
+        {/* Right AI Assistant Dock */}
+        <div className="w-64 bg-[var(--ide-sidebar)] border-l border-[var(--ide-border)] flex flex-col justify-between p-3 shrink-0">
+          <div>
+            <div className="flex items-center justify-between border-b border-[var(--ide-border)] pb-2 text-xs">
+              <span className="font-bold text-primary flex items-center gap-1.5">
+                <Bot size={14} /> AI ASSISTANT
+              </span>
+            </div>
+
+            <div className="mt-6 flex flex-col items-center justify-center text-center p-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center mb-2 shadow-sm">
+                <Bot size={18} />
               </div>
-              <div className="text-sm text-white font-medium mb-2">AI Code Assistant</div>
-              <div className="text-xs text-gray-500 leading-relaxed">
-                Ask questions about your code, generate components, or debug issues while viewing your files.
-              </div>
-           </div>
-           
-           <div className="p-3 border-t border-white/5 bg-[#121212]">
-             <div className="bg-[#1a1a1a] border border-white/10 rounded-lg p-2.5 flex items-center focus-within:border-primary/50 transition-colors">
-               <input type="text" placeholder="Ask about code..." className="w-full bg-transparent border-none outline-none text-xs text-white placeholder-gray-600" />
-             </div>
-           </div>
+              <h4 className="text-xs font-semibold text-[var(--ide-text-bright)] mb-1">
+                AI Assistant Docked
+              </h4>
+              <p className="text-[11px] text-[var(--ide-text-dim)] leading-normal">
+                Ask questions about your codebase, scaffold tests, or run multi-file agentic refactors.
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-[var(--ide-bg)] border border-[var(--ide-border)] rounded-xl p-2.5 flex items-center text-xs text-[var(--ide-text-dim)] shadow-sm">
+            <span className="text-[11px]">Ask about code...</span>
+          </div>
         </div>
 
       </div>
+
     </div>
   );
 }

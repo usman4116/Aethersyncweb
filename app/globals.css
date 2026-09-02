@@ -71,6 +71,17 @@
       0 36px 110px -44px rgb(var(--color-primary) / 0.4),
       0 30px 90px -40px rgb(0 0 0 / 0.75);
 
+    /* Desktop App Simulator Tokens ------------------------------------ */
+    --ide-bg: #0c0c0c;
+    --ide-sidebar: #111111;
+    --ide-header: #141414;
+    --ide-card: #181818;
+    --ide-border: rgba(255, 255, 255, 0.08);
+    --ide-text: #cccccc;
+    --ide-text-bright: #ffffff;
+    --ide-text-dim: #777777;
+    --ide-code-bg: #080808;
+
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-display: 'Plus Jakarta Sans', 'Inter', sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, monospace;
@@ -122,6 +133,17 @@
       0 8px 18px -6px rgb(16 20 30 / 0.12),
       0 30px 70px -30px rgb(var(--color-primary) / 0.26),
       0 26px 60px -28px rgb(16 20 30 / 0.28);
+
+    /* Light Theme Desktop Simulator Overrides --------------------------- */
+    --ide-bg: #ffffff;
+    --ide-sidebar: #f5f6f8;
+    --ide-header: #ebecee;
+    --ide-card: #ffffff;
+    --ide-border: rgba(0, 0, 0, 0.09);
+    --ide-text: #2f343b;
+    --ide-text-bright: #0c0d12;
+    --ide-text-dim: #777e8a;
+    --ide-code-bg: #fbfbfb;
   }
 
   * {
