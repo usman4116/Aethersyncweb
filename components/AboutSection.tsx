@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { ArrowUpRight } from 'lucide-react';
+import Image from 'next/image';
+import { ArrowUpRight, Sparkles } from 'lucide-react';
 import { Section } from '@/components/layout/Section';
 import { Eyebrow } from '@/components/ui/Eyebrow';
 import { Reveal } from '@/components/ui/Reveal';
@@ -13,7 +14,7 @@ const stats = [
 export function AboutSection() {
   return (
     <Section id="about" className="border-b border-border">
-      <div className="grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
+      <div className="grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-20 items-center">
         <Reveal>
           <Eyebrow rule>Our mission</Eyebrow>
           <h2 className="mt-5 text-display-sm font-bold text-foreground">
@@ -26,11 +27,33 @@ export function AboutSection() {
             pairs local execution speed with frontier model intelligence — without shipping their
             source to someone else&rsquo;s cluster to get it.
           </p>
+
+          {/* Founder Quote / Signature Card */}
+          <div className="mt-8 p-4 rounded-xl border border-border bg-surface/40 flex items-center gap-4 max-w-md">
+            <div className="relative w-12 h-12 rounded-full overflow-hidden border border-primary/40 shrink-0">
+              <Image 
+                src="/founder.jpg" 
+                alt="Usman Farhan — Founder" 
+                fill 
+                className="object-cover object-top"
+              />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                Muhammad Usman Farhan
+                <span className="px-1.5 py-0.5 rounded text-[9px] bg-primary/15 text-primary font-mono">Founder</span>
+              </span>
+              <span className="text-[11px] text-text-secondary mt-0.5">
+                "Developer tools should serve the engineer, with zero compromise on privacy."
+              </span>
+            </div>
+          </div>
+
           <Link
             href="/about"
-            className="mt-8 inline-flex items-center gap-1.5 text-label font-semibold text-primary"
+            className="mt-6 inline-flex items-center gap-1.5 text-label font-semibold text-primary hover:underline"
           >
-            Meet the team behind AetherSync
+            Meet the leadership team behind AetherSync
             <ArrowUpRight size={14} />
           </Link>
         </Reveal>
@@ -47,7 +70,7 @@ export function AboutSection() {
             ))}
           </dl>
           <p className="mt-6 text-label text-muted">
-            Measured on a local workspace with an Ollama model — no network round trip in the loop.
+            Measured on a local workspace with an Ollama model — zero network round trip in the loop.
           </p>
         </Reveal>
       </div>

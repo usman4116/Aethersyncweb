@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { AboutSection } from '@/components/AboutSection';
@@ -5,20 +6,23 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { Section } from '@/components/layout/Section';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Reveal } from '@/components/ui/Reveal';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Sparkles, Code2, Cpu } from 'lucide-react';
 
 export const metadata = {
-  title: 'About AetherSync Technology',
+  title: 'About AetherSync Technology — Founder Usman Farhan',
   description:
     'AetherSync Technology builds AetherSync IDE and AetherSync AI: autonomous developer platforms engineered so your source code never leaves your machine.',
   keywords: [
     'About AetherSync',
+    'Usman Farhan',
+    'Muhammad Usman Farhan',
+    'AetherSync Founder',
     'AetherSync Technology',
     'AetherSync AI company',
     'AetherSync IDE team',
   ],
   openGraph: {
-    title: 'About AetherSync — The Team Behind AetherSync IDE',
+    title: 'About AetherSync — Founder Usman Farhan & Team',
     description: 'AetherSync Technology builds AetherSync IDE and AetherSync AI: autonomous developer platforms engineered so your source code never leaves your machine.',
     url: '/about',
     type: 'website',
@@ -28,16 +32,16 @@ export const metadata = {
 
 const founders = [
   {
-    initial: 'U',
     name: 'Muhammad Usman Farhan',
     role: 'CEO & Founder',
-    bio: "Visionary engineer and entrepreneur driving the AetherSync mission to build the world's most powerful autonomous AI developer platform.",
+    image: '/founder.jpg',
+    bio: "Visionary engineer and entrepreneur driving the AetherSync mission to build Pakistan's 1st Autonomous AI IDE and empower global developers with private, high-speed agentic coding.",
     lead: true,
   },
   {
-    initial: 'A',
     name: 'Muhammad Abdullah Bhatti',
     role: 'Co-Founder',
+    initial: 'A',
     bio: 'Core architect and product strategist shaping the AetherSync ecosystem — from infrastructure to user experience across every platform.',
     lead: false,
   },
@@ -61,39 +65,91 @@ export default function AboutPage() {
 
         <Section>
           <SectionHeader
-            eyebrow="The people behind AetherSync"
+            eyebrow="Leadership & Innovation"
             title="Meet the founders."
-            description="A small team building developer tooling with the assumption that your code stays yours."
+            description="Engineering the frontier of local-first developer tooling and autonomous AI systems."
           />
 
-          <div className="mt-14 grid gap-4 sm:grid-cols-2">
-            {founders.map((f, idx) => (
-              <Reveal key={f.name} delay={idx * 60}>
-                <article
-                  className={`flex h-full flex-col gap-5 rounded-xl border bg-surface/45 p-8 ${
-                    f.lead ? 'border-primary/30' : 'border-border'
-                  }`}
-                >
-                  <span
-                    className={`flex h-14 w-14 items-center justify-center rounded-lg font-display text-heading-sm font-bold ${
-                      f.lead
-                        ? 'bg-primary text-primary-fg'
-                        : 'border border-primary/35 bg-surface-elevated text-primary'
-                    }`}
-                    aria-hidden
-                  >
-                    {f.initial}
-                  </span>
+          <div className="mt-14 grid gap-8 md:grid-cols-[1.4fr_1fr] items-stretch">
+            {/* Founder Usman Farhan Featured Card */}
+            <Reveal>
+              <article className="h-full rounded-2xl border border-primary/40 bg-surface/60 backdrop-blur-xl p-6 sm:p-8 flex flex-col md:flex-row gap-6 items-center shadow-xl relative overflow-hidden group">
+                <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+                
+                {/* Founder Image */}
+                <div className="relative w-44 h-56 sm:w-52 sm:h-64 rounded-xl overflow-hidden shrink-0 border-2 border-primary/30 shadow-2xl">
+                  <Image
+                    src="/founder.jpg"
+                    alt="Muhammad Usman Farhan — Founder & CEO of AetherSync"
+                    fill
+                    className="object-cover object-top filter grayscale contrast-110 hover:grayscale-0 transition-all duration-500"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                  <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between text-[10px] text-white font-mono bg-black/60 backdrop-blur-md px-2 py-1 rounded border border-white/10">
+                    <span>AETHERSYNC</span>
+                    <span className="text-primary">FOUNDER</span>
+                  </div>
+                </div>
 
+                {/* Content */}
+                <div className="flex flex-col justify-between flex-1 gap-3">
                   <div>
-                    <h3 className="font-display text-body-lg font-semibold text-foreground">{f.name}</h3>
-                    <p className="kicker mt-1.5">{f.role}</p>
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/15 text-primary text-xs font-semibold mb-2 border border-primary/30">
+                      <Sparkles size={12} />
+                      <span>Founder & CEO</span>
+                    </div>
+                    <h3 className="font-display text-2xl font-bold text-foreground tracking-tight">
+                      Muhammad Usman Farhan
+                    </h3>
+                    <p className="text-primary font-mono text-xs font-semibold mt-0.5">
+                      CEO & Founder · AetherSync Technology
+                    </p>
                   </div>
 
-                  <p className="text-label leading-relaxed text-text-secondary">{f.bio}</p>
-                </article>
-              </Reveal>
-            ))}
+                  <p className="text-sm leading-relaxed text-text-secondary">
+                    Visionary engineer and entrepreneur driving the AetherSync mission to pioneer the world's most powerful, privacy-first autonomous AI IDE — pairing local execution speed with frontier intelligence.
+                  </p>
+
+                  <div className="pt-2 flex flex-wrap gap-2 text-xs">
+                    <span className="px-2.5 py-1 rounded-md bg-background border border-border text-text-secondary font-mono text-[11px] flex items-center gap-1">
+                      <Code2 size={12} className="text-primary" /> Autonomous IDE
+                    </span>
+                    <span className="px-2.5 py-1 rounded-md bg-background border border-border text-text-secondary font-mono text-[11px] flex items-center gap-1">
+                      <Cpu size={12} className="text-primary" /> Multi-Model Architecture
+                    </span>
+                  </div>
+                </div>
+              </article>
+            </Reveal>
+
+            {/* Co-Founder Card */}
+            <Reveal delay={80}>
+              <article className="h-full rounded-2xl border border-border bg-surface/45 backdrop-blur-xl p-6 sm:p-8 flex flex-col justify-between gap-5 shadow-lg">
+                <div>
+                  <div className="w-14 h-14 rounded-xl bg-surface-elevated border border-primary/35 text-primary font-bold text-2xl flex items-center justify-center font-display mb-4 shadow-sm">
+                    A
+                  </div>
+                  <div className="inline-block px-2.5 py-0.5 rounded-full bg-surface text-text-secondary text-xs font-medium mb-1 border border-border">
+                    Co-Founder
+                  </div>
+                  <h3 className="font-display text-xl font-bold text-foreground">
+                    Muhammad Abdullah Bhatti
+                  </h3>
+                  <p className="text-muted text-xs font-mono mt-0.5">
+                    Co-Founder · Core Architecture
+                  </p>
+                </div>
+
+                <p className="text-sm leading-relaxed text-text-secondary">
+                  Core architect and product strategist shaping the AetherSync ecosystem — from high-throughput local PTY terminal infrastructure to seamless multi-platform UX.
+                </p>
+
+                <div className="border-t border-border pt-3">
+                  <span className="text-[11px] text-muted font-mono">Infrastructure · PTY Core · System Design</span>
+                </div>
+              </article>
+            </Reveal>
           </div>
         </Section>
 
