@@ -5,6 +5,7 @@ import { ProvidersSection } from '@/components/ProvidersSection';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Section } from '@/components/layout/Section';
 import { ShotFrame } from '@/components/ui/ShotFrame';
+import { LiveProvidersApp } from '@/components/ui/LiveProvidersApp';
 
 export const metadata = {
   title: 'Model Providers — Claude, GPT-4o, DeepSeek, Ollama',
@@ -89,12 +90,12 @@ export default function ProvidersPage() {
               </ul>
             </div>
             <ShotFrame
-              src="/shots/providers-dark.webp"
               alt="AetherSync IDE settings: provider configuration with quick presets, API format, base URL, API key and model fields"
               caption="Settings — Provider configuration"
-              sizes="(min-width: 1024px) 58vw, 100vw"
               glow
-            />
+            >
+              <LiveProvidersApp />
+            </ShotFrame>
           </div>
         </Section>
 
