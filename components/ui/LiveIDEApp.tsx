@@ -12,6 +12,33 @@ import {
 const DEFAULT_PROJECT_NAME = 'aethersync-core';
 
 const DEFAULT_FILES: Record<string, string> = {
+  'src/index.css': `@import "tailwindcss";
+
+@theme {
+  --color-border: rgba(255, 255, 255, 0.1);
+}
+
+@layer base {
+  :root {
+    --primary: #cbd5e1;
+    --secondary: #94a3b8;
+    --accent: #ffffff;
+    --glow: #e2e8f0;
+    --bg-dark: #020202;
+    --bg-card: rgba(15, 15, 15, 0.6);
+    --border: rgba(255, 255, 255, 0.1);
+    --text: #ffffff;
+    --text-muted: #a1a1aa;
+  }
+
+  *,
+  *::before,
+  *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+}`,
   'src/useReducedMotion.ts': `import { useEffect, useState } from 'react';
 
 // Tracks the OS reduced-motion preference in real-time
@@ -71,11 +98,134 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 }`
 };
 
+// Robust, high-speed syntax highlighter for multiple languages
+function renderSyntaxHighlightedLine(line: string, filename: string): React.ReactNode {
+  if (!line) return <span>&nbsp;</span>;
+
+  const ext = filename.split('.').pop()?.toLowerCase() || '';
+
+  // Comments
+  const trimmed = line.trim();
+  if (trimmed.startsWith('//') || trimmed.startsWith('/*') || trimmed.startsWith('*') || (trimmed.startsWith('#') && ext !== 'css')) {
+    return <span className="text-gray-500 italic">{line}</span>;
+  }
+
+  // CSS / SCSS formatting
+  if (ext === 'css' || ext === 'scss') {
+    if (trimmed.startsWith('@import') || trimmed.startsWith('@theme') || trimmed.startsWith('@layer') || trimmed.startsWith('@media') || trimmed.startsWith('@keyframes')) {
+      const parts = line.split(/(@\w+|"[^"]*"|'[^']*')/g);
+      return (
+        <span>
+          {parts.map((p, idx) => {
+            if (p.startsWith('@')) return <span key={idx} className="text-purple-400 font-bold">{p}</span>;
+            if (p.startsWith('"') || p.startsWith("'")) return <span key={idx} className="text-emerald-400">{p}</span>;
+            return <span key={idx} className="text-[var(--ide-text-bright)]">{p}</span>;
+          })}
+        </span>
+      );
+    }
+
+    if (line.includes(':') && !line.includes('{') && !line.includes('(') && !trimmed.startsWith(':')) {
+      const colonIdx = line.indexOf(':');
+      const prop = line.slice(0, colonIdx);
+      const val = line.slice(colonIdx + 1);
+      return (
+        <span>
+          <span className="text-sky-400 font-medium">{prop}</span>
+          <span className="text-gray-400">:</span>
+          <span className="text-emerald-300">{val.replace(';', '')}</span>
+          {val.includes(';') && <span className="text-gray-400">;</span>}
+        </span>
+      );
+    }
+
+    if (line.includes('{') || line.includes('::') || line.includes(':root') || line.includes('*') || line.includes('}') || line.includes('.')) {
+      const parts = line.split(/([{}():,*]+)/g);
+      return (
+        <span>
+          {parts.map((p, idx) => {
+            if (['{', '}', '(', ')', ':root', '*', '::before', '::after', ','].includes(p)) {
+              return <span key={idx} className="text-amber-400 font-bold">{p}</span>;
+            }
+            if (p.startsWith('--')) {
+              return <span key={idx} className="text-sky-400">{p}</span>;
+            }
+            return <span key={idx} className="text-[var(--ide-text-bright)]">{p}</span>;
+          })}
+        </span>
+      );
+    }
+  }
+
+  // JSON formatting
+  if (ext === 'json') {
+    const parts = line.split(/(".*?"|[:,{}[\]]|true|false|null|[0-9]+)/g);
+    return (
+      <span>
+        {parts.map((p, idx) => {
+          if (p.startsWith('"') && line.indexOf(p) < line.indexOf(':')) {
+            return <span key={idx} className="text-sky-400 font-semibold">{p}</span>;
+          }
+          if (p.startsWith('"')) {
+            return <span key={idx} className="text-emerald-400">{p}</span>;
+          }
+          if (['true', 'false', 'null'].includes(p)) {
+            return <span key={idx} className="text-purple-400 font-bold">{p}</span>;
+          }
+          if (/^[0-9]+$/.test(p)) {
+            return <span key={idx} className="text-orange-400">{p}</span>;
+          }
+          return <span key={idx} className="text-[var(--ide-text)]">{p}</span>;
+        })}
+      </span>
+    );
+  }
+
+  // JS / TS / JSX / TSX formatting
+  const tokens = line.split(/(".*?"|'.*?'|`.*?`|\/\/.*|\b[a-zA-Z_$][a-zA-Z0-9_$]*\b|[{}()[\]<>=!+\-*/&|:;,])/g);
+  
+  return (
+    <span>
+      {tokens.map((token, idx) => {
+        if (!token) return null;
+        if (token.startsWith('//')) {
+          return <span key={idx} className="text-gray-500 italic">{token}</span>;
+        }
+        if (token.startsWith('"') || token.startsWith("'") || token.startsWith('`')) {
+          return <span key={idx} className="text-emerald-400">{token}</span>;
+        }
+        if (['import', 'export', 'from', 'const', 'let', 'var', 'function', 'return', 'if', 'else', 'async', 'await', 'type', 'interface', 'class', 'default', 'switch', 'case', 'break'].includes(token)) {
+          return <span key={idx} className="text-purple-400 font-bold">{token}</span>;
+        }
+        if (['true', 'false', 'null', 'undefined', 'boolean', 'string', 'number', 'any', 'void'].includes(token)) {
+          return <span key={idx} className="text-blue-400 font-medium">{token}</span>;
+        }
+        if (['React', 'useState', 'useEffect', 'useContext', 'useRef', 'useCallback', 'useMemo'].includes(token)) {
+          return <span key={idx} className="text-amber-400 font-semibold">{token}</span>;
+        }
+        if (/^[A-Z][a-zA-Z0-9_$]*$/.test(token)) {
+          return <span key={idx} className="text-amber-300 font-semibold">{token}</span>;
+        }
+        if (/^[0-9]+(\.[0-9]+)?$/.test(token)) {
+          return <span key={idx} className="text-orange-400">{token}</span>;
+        }
+        if (['{', '}', '(', ')', '[', ']'].includes(token)) {
+          return <span key={idx} className="text-amber-400">{token}</span>;
+        }
+        if (['=', '==', '===', '!=', '!==', '>', '<', '>=', '<=', '+', '-', '*', '/', '&', '|', '!', '?', ':'].includes(token)) {
+          return <span key={idx} className="text-cyan-400">{token}</span>;
+        }
+        return <span key={idx} className="text-[var(--ide-text-bright)]">{token}</span>;
+      })}
+    </span>
+  );
+}
+
 export function LiveIDEApp() {
   const [projectName, setProjectName] = useState(DEFAULT_PROJECT_NAME);
   const [files, setFiles] = useState<Record<string, string>>(DEFAULT_FILES);
-  const [openTabs, setOpenTabs] = useState<string[]>(['src/useReducedMotion.ts', 'src/app-context.tsx']);
-  const [activeTab, setActiveTab] = useState<string>('src/useReducedMotion.ts');
+  const [openTabs, setOpenTabs] = useState<string[]>(['src/index.css', 'src/useReducedMotion.ts', 'src/app-context.tsx']);
+  const [activeTab, setActiveTab] = useState<string>('src/index.css');
   const [activeView, setActiveView] = useState<'ide' | 'chat' | 'agent' | 'settings'>('ide');
   const [activeModel, setActiveModel] = useState('Claude 3.7 Sonnet');
   const [showModelDropdown, setShowModelDropdown] = useState(false);
@@ -104,7 +254,6 @@ export function LiveIDEApp() {
   ]);
 
   // Coding Agent State
-  const [agentPrompt, setAgentPrompt] = useState('');
   const [agentActivity, setAgentActivity] = useState<string[]>([]);
 
   // Simple Chat State
@@ -114,7 +263,16 @@ export function LiveIDEApp() {
   const [chatInput, setChatInput] = useState('');
 
   const folderInputRef = useRef<HTMLInputElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const highlightPreRef = useRef<HTMLPreElement>(null);
+
+  // Synchronize textarea and highlight scroll
+  const handleScroll = (e: React.UIEvent<HTMLTextAreaElement>) => {
+    if (highlightPreRef.current) {
+      highlightPreRef.current.scrollTop = e.currentTarget.scrollTop;
+      highlightPreRef.current.scrollLeft = e.currentTarget.scrollLeft;
+    }
+  };
 
   // Handle folder opening via real file picker
   const handleOpenFolderClick = (e?: React.MouseEvent) => {
@@ -168,7 +326,6 @@ export function LiveIDEApp() {
     }
   };
 
-  // Code editor changes
   const handleCodeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newContent = e.target.value;
     setFiles(prev => ({
@@ -254,7 +411,7 @@ export function LiveIDEApp() {
       { role: 'user', text: query },
       { 
         role: 'assistant', 
-        text: `I inspected "${activeTab}" with ${activeModel}. I can help you implement or optimize this change!` 
+        text: `I analyzed "${activeTab}" with ${activeModel}. I can refactor or write code changes into your workspace directly!` 
       }
     ]);
   };
@@ -283,7 +440,8 @@ export function LiveIDEApp() {
   };
 
   const activeContent = files[activeTab] || '';
-  const linesCount = Math.max(14, activeContent.split('\n').length);
+  const linesArray = activeContent.split('\n');
+  const linesCount = Math.max(14, linesArray.length);
 
   const filteredFiles = Object.keys(files).filter(f => 
     f.toLowerCase().includes(searchQuery.toLowerCase())
@@ -351,7 +509,7 @@ export function LiveIDEApp() {
           <span className="opacity-40 text-[10px]">Ctrl+P</span>
         </div>
         
-        {/* Right: Model Picker & Window Controls */}
+        {/* Right: Model Picker & macOS Traffic Light Controls */}
         <div className="flex items-center gap-3 text-xs text-[var(--ide-text-dim)] relative">
           <div 
             onClick={() => setShowModelDropdown(!showModelDropdown)}
@@ -385,6 +543,7 @@ export function LiveIDEApp() {
             <Terminal size={13} /> Terminal
           </button>
 
+          {/* macOS Traffic Lights */}
           <div className="flex items-center gap-2 ml-2 pl-3 border-l border-[var(--ide-border)]">
             <button 
               onClick={() => { setFiles(DEFAULT_FILES); setProjectName(DEFAULT_PROJECT_NAME); }}
@@ -425,7 +584,7 @@ export function LiveIDEApp() {
               </div>
             </div>
 
-            {/* New File / New Chat Action Button */}
+            {/* New File Action Button */}
             <button 
               onClick={handleCreateNewFile}
               className="w-full bg-primary hover:bg-[#ff8642] text-black text-xs font-bold py-2 rounded-lg flex items-center justify-center gap-1.5 mb-4 transition-all shadow-sm active:scale-95"
@@ -489,9 +648,8 @@ export function LiveIDEApp() {
           </div>
         </div>
 
-        {/* Dynamic View Display based on activeView */}
+        {/* Dynamic View Display */}
         {activeView === 'settings' ? (
-          /* Settings / Provider Configuration View */
           <div className="flex-1 bg-[var(--ide-bg)] p-6 overflow-y-auto no-scrollbar flex flex-col gap-5">
             <div className="flex items-center justify-between pb-4 border-b border-[var(--ide-border)]">
               <div>
@@ -534,7 +692,6 @@ export function LiveIDEApp() {
             </div>
           </div>
         ) : activeView === 'chat' ? (
-          /* Simple Chat View */
           <div className="flex-1 bg-[var(--ide-bg)] flex flex-col justify-between p-6">
             <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4 max-w-3xl mx-auto w-full no-scrollbar">
               {chatMessages.map((m, i) => (
@@ -560,7 +717,6 @@ export function LiveIDEApp() {
             </form>
           </div>
         ) : activeView === 'agent' ? (
-          /* Coding Agent View */
           <div className="flex-1 bg-[var(--ide-bg)] flex flex-col justify-between p-6">
             <div className="flex-1 flex flex-col items-center justify-center max-w-2xl mx-auto text-center gap-6">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#ff7a2e] to-[#ff5700] flex items-center justify-center text-white font-extrabold text-3xl shadow-xl">
@@ -598,7 +754,7 @@ export function LiveIDEApp() {
             </div>
           </div>
         ) : (
-          /* Standard IDE Workspace (Explorer + Monaco Editor + Terminal + Assistant) */
+          /* Standard IDE Workspace */
           <>
             {/* Explorer Sidebar */}
             <div className="w-56 bg-[var(--ide-sidebar)] border-r border-[var(--ide-border)] flex flex-col shrink-0">
@@ -614,7 +770,6 @@ export function LiveIDEApp() {
                 </div>
               </div>
 
-              {/* Explorer File Tree List */}
               <div className="p-2 flex flex-col gap-1 text-xs overflow-y-auto flex-1 no-scrollbar">
                 <div className="flex items-center justify-between font-bold text-[var(--ide-text-bright)] px-1 py-1 cursor-pointer">
                   <div className="flex items-center gap-1.5 truncate">
@@ -647,7 +802,6 @@ export function LiveIDEApp() {
                   })}
                 </div>
 
-                {/* Import Local Folder Button */}
                 <div 
                   onClick={handleOpenFolderClick}
                   className="mt-4 p-3 rounded-xl border border-dashed border-primary/40 bg-primary/5 hover:bg-primary/10 cursor-pointer flex flex-col items-center justify-center text-center gap-1 transition-colors"
@@ -659,7 +813,7 @@ export function LiveIDEApp() {
               </div>
             </div>
 
-            {/* Center Code Editor & Terminal */}
+            {/* Center Code Editor with Rich Syntax Highlighting & Terminal */}
             <div className="flex-1 flex flex-col overflow-hidden bg-[var(--ide-code-bg)]">
               
               {/* Editor Tabs */}
@@ -688,21 +842,43 @@ export function LiveIDEApp() {
                 })}
               </div>
 
-              {/* Live Editable Code Workspace */}
+              {/* Live Syntax Highlighted & Editable Code Canvas */}
               <div className="flex-1 flex overflow-hidden relative">
+                
+                {/* Line Numbers */}
                 <div className="select-none text-[var(--ide-text-dim)] opacity-40 text-right pr-2 pl-3 py-4 border-r border-[var(--ide-border)] font-mono text-[11.5px] leading-relaxed shrink-0">
                   {Array.from({ length: linesCount }).map((_, i) => (
                     <div key={i}>{i + 1}</div>
                   ))}
                 </div>
 
-                <textarea 
-                  value={activeContent}
-                  onChange={handleCodeChange}
-                  spellCheck={false}
-                  className="flex-1 w-full h-full bg-transparent border-none outline-none resize-none p-4 font-mono text-[11.5px] leading-relaxed text-[var(--ide-text)] focus:text-[var(--ide-text-bright)] selection:bg-primary/30"
-                  placeholder="// Type or edit code directly in this file..."
-                />
+                {/* Code Body Container */}
+                <div className="flex-1 h-full relative overflow-hidden">
+                  
+                  {/* Highlighted syntax display layer */}
+                  <pre 
+                    ref={highlightPreRef}
+                    aria-hidden="true"
+                    className="absolute inset-0 p-4 font-mono text-[11.5px] leading-relaxed overflow-hidden pointer-events-none select-none m-0 whitespace-pre"
+                  >
+                    {linesArray.map((line, idx) => (
+                      <div key={idx}>
+                        {renderSyntaxHighlightedLine(line, activeTab)}
+                      </div>
+                    ))}
+                  </pre>
+
+                  {/* Live typing / editing layer */}
+                  <textarea 
+                    ref={textareaRef}
+                    value={activeContent}
+                    onChange={handleCodeChange}
+                    onScroll={handleScroll}
+                    spellCheck={false}
+                    className="absolute inset-0 w-full h-full p-4 font-mono text-[11.5px] leading-relaxed text-transparent caret-[var(--ide-text-bright)] bg-transparent resize-none outline-none border-none whitespace-pre overflow-auto focus:outline-none selection:bg-primary/30 z-10"
+                    placeholder="// Type or edit code directly in this file..."
+                  />
+                </div>
               </div>
 
               {/* Collapsible Terminal */}
@@ -793,7 +969,7 @@ export function LiveIDEApp() {
 
       </div>
 
-      {/* Quick Search Modal (Ctrl+P / Search bar) */}
+      {/* Quick Search Modal */}
       {showSearchModal && (
         <div 
           onClick={() => setShowSearchModal(false)}
