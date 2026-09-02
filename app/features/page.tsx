@@ -1,24 +1,33 @@
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
-import {
-  Code2,
-  FolderLock,
-  Terminal,
-  Cpu,
-  Globe,
-  Boxes,
-  Zap,
-  ShieldCheck,
-  CheckCircle2,
-  Sparkles,
-  GitBranch,
-  Search,
-  Key,
-} from 'lucide-react';
+import { Boxes, Check, Code2, Cpu, FolderLock, Globe, Terminal } from 'lucide-react';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { Section } from '@/components/layout/Section';
+import { SectionHeader } from '@/components/ui/SectionHeader';
+import { ShotFrame } from '@/components/ui/ShotFrame';
+import { Button } from '@/components/ui/Button';
+import { Reveal } from '@/components/ui/Reveal';
+import Link from 'next/link';
 
 export const metadata = {
-  title: 'Features & Architecture | AetherSync AI IDE',
-  description: 'Explore the core autonomous capabilities, local sandbox, multi-provider model switching, and Monaco editor inside AetherSync Desktop.',
+  title: 'Features — Autonomous Agent & Sandboxed Terminal',
+  description:
+    'Every capability inside AetherSync AI: the autonomous multi-file coding agent, the local-first sandbox, the integrated PTY terminal, multi-provider model switching and the Monaco editor.',
+  keywords: [
+    'AetherSync IDE features',
+    'AetherSync AI features',
+    'autonomous coding agent',
+    'AI IDE sandboxed terminal',
+    'multi-file refactoring AI',
+    'Monaco AI code editor',
+  ],
+  openGraph: {
+    title: 'AetherSync IDE Features — Autonomous Agent, Sandboxed Terminal & Model Hub',
+    description: 'Every capability inside AetherSync AI: the autonomous multi-file coding agent, the local-first sandbox, the integrated PTY terminal, multi-provider model switching and the Monaco editor.',
+    url: '/features',
+    type: 'website',
+  },
+  alternates: { canonical: '/features' },
 };
 
 const featureDetails = [
@@ -45,6 +54,7 @@ const featureDetails = [
     ],
   },
   {
+    id: 'terminal',
     icon: Terminal,
     badge: 'Native Execution',
     title: 'Integrated Sandboxed PTY Terminal Shell',
@@ -92,63 +102,98 @@ const featureDetails = [
 
 export default function FeaturesPage() {
   return (
-    <div className="relative min-h-screen bg-background text-foreground">
+    <div className="relative min-h-screen text-foreground">
       <Navbar />
 
-      {/* Hero Header */}
-      <section className="relative pt-36 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
-        <div className="glow-orb top-20 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-primary/15" />
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/10 border border-primary/25 text-primary text-xs font-semibold mb-4">
-          <Zap size={13} />
-          <span>Complete Feature Guide</span>
-        </div>
-        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-foreground leading-tight">
-          Everything You Need for <span className="aether-gradient-text">Autonomous Engineering</span>
-        </h1>
-        <p className="mt-4 text-base sm:text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">
-          Deep architectural review of the capabilities powering AetherSync AI IDE and Desktop Agent.
-        </p>
-      </section>
+      <main>
+        <PageHeader
+          eyebrow="Complete feature guide"
+          title="Everything you need for autonomous engineering."
+          description="An architectural review of the capabilities powering the AetherSync IDE and its desktop agent — what each subsystem does, and where its boundaries are."
+          actions={
+            <>
+              <Link href="/download">
+                <Button size="lg">Download AetherSync</Button>
+              </Link>
+              <Link href="/preview">
+                <Button size="lg" variant="outline">
+                  Try the live workspace
+                </Button>
+              </Link>
+            </>
+          }
+        />
 
-      {/* Feature Deep Dive Grid */}
-      <section className="relative pb-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {featureDetails.map((feat, idx) => {
-            const Icon = feat.icon;
-            return (
-              <div
-                key={idx}
-                className="aether-card rounded-2xl p-8 transition-all duration-300 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-5">
-                    <div className="w-12 h-12 rounded-xl bg-primary/15 border border-primary/30 flex items-center justify-center text-primary">
-                      <Icon size={24} />
+        <Section>
+          <div className="grid gap-4 md:grid-cols-2">
+            {featureDetails.map((feat, idx) => (
+              <Reveal key={feat.title} delay={idx * 55}>
+                <article
+                  id={'id' in feat ? (feat.id as string) : undefined}
+                  className="flex h-full scroll-mt-28 flex-col justify-between rounded-xl border border-border bg-surface/45 p-8"
+                >
+                  <div>
+                    <div className="mb-6 flex items-center justify-between gap-4">
+                      <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-background text-primary">
+                        <feat.icon size={18} />
+                      </span>
+                      <span className="kicker">{feat.badge}</span>
                     </div>
-                    <span className="text-[10px] font-mono font-semibold px-2.5 py-1 rounded-full bg-surface text-primary border border-border">
-                      {feat.badge}
-                    </span>
+
+                    <h2 className="font-display text-heading-sm font-semibold text-foreground">
+                      {feat.title}
+                    </h2>
+                    <p className="mt-3 text-[0.875rem] leading-relaxed text-text-secondary">
+                      {feat.desc}
+                    </p>
                   </div>
 
-                  <h2 className="text-xl font-bold text-foreground mb-3">{feat.title}</h2>
-                  <p className="text-xs sm:text-sm text-text-secondary leading-relaxed font-normal mb-6">
-                    {feat.desc}
-                  </p>
-                </div>
+                  <ul className="mt-7 flex flex-col gap-2.5 border-t border-border pt-6">
+                    {feat.bullets.map((b) => (
+                      <li key={b} className="flex items-start gap-2.5 text-label text-text-secondary">
+                        <Check size={14} className="mt-px shrink-0 text-primary" aria-hidden />
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+        </Section>
+        {/* Those subsystems, as they appear in the shipped build */}
+        <Section spacing="tight" className="border-t border-border">
+          <SectionHeader
+            eyebrow="Seen in the app"
+            title="Where each subsystem lives."
+            description="Screenshots of AetherSync Desktop 0.1.0 — the autonomous agent with its activity rail, and the permission matrix that gates everything it is allowed to touch."
+          />
 
-                <div className="pt-5 border-t border-border space-y-2">
-                  {feat.bullets.map((b, i) => (
-                    <div key={i} className="flex items-center gap-2 text-xs text-text-secondary">
-                      <CheckCircle2 size={13} className="text-primary shrink-0" />
-                      <span>{b}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
+          <div className="mt-10 grid items-start gap-8 lg:grid-cols-[1.6fr_1fr] lg:gap-10">
+            <Reveal>
+              <ShotFrame
+                src="/shots/agent-dark.webp"
+                alt="AetherSync IDE Coding Agent with the tool-call activity rail and the sandbox scoped to the open project folder"
+                caption="Coding Agent — activity rail, sandbox scoped to the open folder"
+                sizes="(min-width: 1024px) 60vw, 100vw"
+                lift
+                glow
+              />
+            </Reveal>
+            <Reveal delay={90}>
+              <ShotFrame
+                src="/shots/permissions-dark.webp"
+                width={555}
+                height={487}
+                alt="AetherSync IDE permission matrix: allow, ask or deny file reading, writing, deletion, terminal, git, package installation, network access and MCP tools"
+                caption="Settings — per-capability permission matrix"
+                sizes="(min-width: 1024px) 34vw, 100vw"
+                lift
+              />
+            </Reveal>
+          </div>
+        </Section>
+      </main>
 
       <Footer />
     </div>

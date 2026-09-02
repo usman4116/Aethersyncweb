@@ -1,55 +1,46 @@
-import * as React from "react"
-import { cn } from "@/lib/utils"
+import * as React from 'react';
+import { cn } from '@/lib/utils';
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "glass"
-  size?: "sm" | "md" | "lg"
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'glass';
+  size?: 'sm' | 'md' | 'lg';
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "primary", size = "md", ...props }, ref) => {
-    return (
-      <button
-        ref={ref}
-        className={cn(
-          "inline-flex items-center justify-center rounded-xl text-sm font-bold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background group relative overflow-hidden",
-          {
-            // Primary: Vibrant gradient with inner glow and outer drop shadow
-            "bg-gradient-to-b from-primary to-primary/80 text-white shadow-[0_0_20px_rgba(255,102,0,0.3)] hover:shadow-[0_0_30px_rgba(255,102,0,0.5)] border border-primary/50 hover:brightness-110 active:scale-95": variant === "primary",
-            
-            // Secondary: Subtle gradient
-            "bg-secondary text-white hover:bg-secondary/90 shadow-sm": variant === "secondary",
-            
-            // Outline: Glowing border effect on hover
-            "border border-border bg-surface text-foreground hover:border-primary/50 hover:bg-surface-elevated hover:shadow-[0_0_15px_rgba(255,102,0,0.15)]": variant === "outline",
-            
-            // Ghost: Simple background fade
-            "hover:bg-surface-elevated text-foreground": variant === "ghost",
-            
-            // Glass: Frosted glass effect
-            "bg-surface/50 backdrop-blur-md border border-border hover:bg-surface text-foreground shadow-sm hover:border-primary/30": variant === "glass",
-            
-            // Sizes
-            "h-9 px-4 rounded-lg": size === "sm",
-            "h-11 py-2 px-6 rounded-xl": size === "md",
-            "h-14 px-8 rounded-2xl text-base": size === "lg",
-          },
-          className
-        )}
-        {...props}
-      >
-        {/* Subtle shine effect that sweeps across the button on hover for primary variant */}
-        {variant === 'primary' && (
-          <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-[shimmer_1.5s_infinite]" />
-        )}
-        <span className="relative z-10 flex items-center justify-center gap-2">
-          {props.children}
-        </span>
-      </button>
-    )
-  }
-)
-Button.displayName = "Button"
+/**
+ * One button language for the whole site: flat ember fill for the primary
+ * action, hairline surface for everything else. No gradients, no glow
+ * shadows, no shimmer sweeps — motion is limited to colour and a 1px press.
+ */
+const base =
+  'inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg font-semibold ' +
+  'transition-[background-color,border-color,color,transform] duration-300 ease-cine ' +
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ' +
+  'focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-45 active:translate-y-px';
 
-export { Button }
+const variants: Record<NonNullable<ButtonProps['variant']>, string> = {
+  primary: 'bg-primary text-primary-fg hover:bg-primary-hover',
+  secondary: 'bg-foreground text-background hover:bg-foreground/85',
+  outline:
+    'border border-border-strong bg-transparent text-foreground hover:border-primary/50 hover:bg-surface-hover/60',
+  ghost: 'text-text-secondary hover:bg-surface-hover/60 hover:text-foreground',
+  glass: 'aether-glass border border-border text-foreground hover:border-primary/40',
+};
+
+const sizes: Record<NonNullable<ButtonProps['size']>, string> = {
+  sm: 'h-8 px-3 text-label',
+  md: 'h-10 px-4 text-[0.875rem]',
+  lg: 'h-12 px-6 text-[0.9375rem]',
+};
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant = 'primary', size = 'md', ...props }, ref) => (
+    <button
+      ref={ref}
+      className={cn(base, variants[variant], sizes[size], className)}
+      {...props}
+    />
+  )
+);
+Button.displayName = 'Button';
+
+export { Button };

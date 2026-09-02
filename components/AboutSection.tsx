@@ -1,45 +1,56 @@
-'use client';
+import Link from 'next/link';
+import { ArrowUpRight } from 'lucide-react';
+import { Section } from '@/components/layout/Section';
+import { Eyebrow } from '@/components/ui/Eyebrow';
+import { Reveal } from '@/components/ui/Reveal';
 
-import { ShieldCheck, Heart, Sparkles, Code2, Users, Rocket } from 'lucide-react';
+const stats = [
+  { value: '100%', label: 'Local-first privacy' },
+  { value: '< 100 ms', label: 'Local PTY terminal latency' },
+  { value: '17', label: 'Supported model providers' },
+];
 
 export function AboutSection() {
   return (
-    <section id="about" className="relative py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div className="rounded-3xl border border-border bg-primary from-[#0e0e16] to-[#07070a] p-8 sm:p-14  shadow-2xl relative overflow-hidden">
-        {/* Ambient Glow */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-orange-600/10 rounded-full blur-[100px] pointer-events-none" />
-
-        <div className="relative z-10 max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/15 border border-primary/30 text-primary text-xs font-semibold mb-4">
-            <Rocket size={12} />
-            <span>Our Mission</span>
-          </div>
-
-          <h2 className="text-3xl sm:text-5xl font-black text-foreground tracking-tight leading-tight">
-            Building the Open, High-Performance Future of{' '}
-            <span className="text-primary">Agentic Coding.</span>
+    <Section id="about" className="border-b border-border">
+      <div className="grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
+        <Reveal>
+          <Eyebrow rule>Our mission</Eyebrow>
+          <h2 className="mt-5 text-display-sm font-bold text-foreground">
+            Building the open, high-performance future of{' '}
+            <span className="text-ember-gradient">agentic coding.</span>
           </h2>
-
-          <p className="mt-6 text-sm sm:text-base text-text-secondary leading-relaxed">
-            AetherSync was born out of a simple conviction: AI developer tools should be blazingly fast, deeply autonomous, and respectful of developer sovereignty. We believe software engineers deserve an editor that pairs local execution speed with frontier model intelligence.
+          <p className="mt-6 max-w-prose text-body text-text-secondary">
+            AetherSync started from a simple conviction: AI developer tools should be fast, deeply
+            autonomous and respectful of developer sovereignty. Engineers deserve an editor that
+            pairs local execution speed with frontier model intelligence — without shipping their
+            source to someone else&rsquo;s cluster to get it.
           </p>
+          <Link
+            href="/about"
+            className="mt-8 inline-flex items-center gap-1.5 text-label font-semibold text-primary"
+          >
+            Meet the team behind AetherSync
+            <ArrowUpRight size={14} />
+          </Link>
+        </Reveal>
 
-          <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6 pt-8 border-t border-border">
-            <div>
-              <div className="text-2xl sm:text-3xl font-black text-foreground">100%</div>
-              <div className="text-xs text-text-secondary mt-1">Local-First Privacy</div>
-            </div>
-            <div>
-              <div className="text-2xl sm:text-3xl font-black text-primary">&lt; 100ms</div>
-              <div className="text-xs text-text-secondary mt-1">Local PTY Terminal Latency</div>
-            </div>
-            <div>
-              <div className="text-2xl sm:text-3xl font-black text-foreground">4+</div>
-              <div className="text-xs text-text-secondary mt-1">Frontier AI Model Families</div>
-            </div>
-          </div>
-        </div>
+        <Reveal delay={80} className="lg:pt-2">
+          <dl className="flex flex-col divide-y divide-border border-y border-border">
+            {stats.map((s) => (
+              <div key={s.label} className="flex items-baseline justify-between gap-6 py-6">
+                <dt className="text-[0.875rem] text-text-secondary">{s.label}</dt>
+                <dd className="font-display text-[1.75rem] font-bold tabular-nums text-foreground">
+                  {s.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-6 text-label text-muted">
+            Measured on a local workspace with an Ollama model — no network round trip in the loop.
+          </p>
+        </Reveal>
       </div>
-    </section>
+    </Section>
   );
 }

@@ -2,117 +2,487 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================================
+   AetherSync design tokens
+   All colours are bare RGB channel triplets so Tailwind's `<alpha-value>`
+   opacity modifiers work (`bg-surface/60`, `border-primary/30`, ...).
+   Values are synchronised with the Aethersync company site so both properties
+   read as one design system.
+   ========================================================================== */
 @layer base {
   :root {
-    --color-primary: 204 85 0;
-    --color-secondary: 184 75 0;
-    --color-accent: 224 105 20;
+    /* Brand ------------------------------------------------------------- */
+    --color-primary: 255 108 26;        /* ember 500 — matches the IDE chrome */
+    --color-primary-hover: 255 134 66;
+    --color-on-primary: 24 10 2;        /* dark ink on ember — 7:1 contrast     */
+    --color-secondary: 237 71 0;        /* ember 600 — deeper press state     */
+    --color-accent: 96 165 250;         /* cool counterpoint, used sparingly  */
 
-    /* Dark theme (default) */
+    /* Surfaces (dark is the default theme) ------------------------------ */
     --background: 7 8 16;
-    --background-secondary: 17 18 30;
-    --surface: 24 25 40;
-    --surface-elevated: 30 32 50;
-    --foreground: 248 250 252;
-    --text-secondary: 148 163 184;
-    --text-muted: 100 116 139;
+    --background-secondary: 10 11 20;
+    --surface: 14 16 24;
+    --surface-elevated: 19 22 34;
+    --surface-hover: 26 30 44;
+
+    /* Text --------------------------------------------------------------- */
+    --foreground: 244 245 250;
+    --text-secondary: 160 166 180;
+    --text-muted: 112 118 133;
+
+    /* Lines -------------------------------------------------------------- */
     --border-color: 255 255 255;
-    --border-opacity: 0.08;
+    --border-opacity: 0.1;
+    --border-opacity-strong: 0.2;
 
+    /* Status ------------------------------------------------------------- */
+    --color-success: 52 199 123;
+    --color-warning: 245 176 60;
+    --color-error: 239 84 84;
+
+    /* Radii — deliberately tight; no pill-shaped content cards ---------- */
     --radius-sm: 0.25rem;
-    --radius-md: 0.5rem;
-    --radius-lg: 0.75rem;
-    --radius-xl: 1rem;
+    --radius-md: 0.375rem;
+    --radius-lg: 0.5rem;
+    --radius-xl: 0.75rem;
+    --radius-2xl: 1rem;
 
-    --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
+    /* Atmosphere — the background cinematography dials ------------------- */
+    --bloom-opacity: 1;
+    --grid-opacity: 0.05;
+    --bloom-warm: 255 108 26;    /* ember key light                        */
+    --bloom-cool: 96 165 250;    /* cool fill, keeps it from going monotone */
+    --bloom-warm-alpha: 0.20;
+    --bloom-cool-alpha: 0.13;
+    --grain-opacity: 0.055;      /* 35mm texture over the whole frame      */
+    --vignette-opacity: 0.55;    /* edge falloff, focuses the centre       */
+    --scan-opacity: 0.04;        /* single slow light sweep                */
+    --horizon-opacity: 0.5;      /* light pooling at the top of the page   */
+
+    /* Product-screenshot elevation. Tokenised because the two themes need
+       genuinely different shadows: dark art separates from a dark page with a
+       deep diffuse pool, light art needs contact shadow + a tighter falloff or
+       a white screenshot dissolves into a white page. */
+    --shot-shadow:
+      inset 0 1px 0 0 rgb(255 255 255 / 0.06),
+      0 30px 90px -40px rgb(0 0 0 / 0.75);
+    --shot-shadow-hover:
+      inset 0 1px 0 0 rgb(255 255 255 / 0.08),
+      0 36px 110px -44px rgb(var(--color-primary) / 0.4),
+      0 30px 90px -40px rgb(0 0 0 / 0.75);
+
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-display: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
   }
 
-  /* Light theme overrides */
+  /* Light theme overrides ---------------------------------------------- */
   .light {
-    --background: 252 252 253;
-    --background-secondary: 243 244 246;
-    --surface: 237 238 242;
-    --surface-elevated: 229 230 235;
-    --foreground: 15 17 26;
-    --text-secondary: 71 85 105;
-    --text-muted: 148 163 184;
+    --color-primary: 255 92 0;
+    --color-primary-hover: 237 71 0;
+    --color-on-primary: 26 9 0;
+    --color-secondary: 214 62 0;
+    --color-accent: 37 99 235;
+
+    --background: 255 255 255;
+    --background-secondary: 252 251 249;
+    --surface: 246 244 240;
+    --surface-elevated: 237 234 228;
+    --surface-hover: 229 225 217;
+
+    --foreground: 12 13 18;
+    --text-secondary: 88 92 102;
+    --text-muted: 132 137 148;
+
     --border-color: 0 0 0;
     --border-opacity: 0.09;
+    --border-opacity-strong: 0.16;
+
+    --color-success: 21 143 84;
+    --color-warning: 176 112 10;
+    --color-error: 198 45 45;
+
+    --bloom-opacity: 0.55;
+    --grid-opacity: 0.035;
+    --bloom-warm: 255 92 0;
+    --bloom-cool: 37 99 235;
+    --bloom-warm-alpha: 0.12;
+    --bloom-cool-alpha: 0.07;
+    --grain-opacity: 0.028;
+    --vignette-opacity: 0.07;
+    --scan-opacity: 0;
+    --horizon-opacity: 0.35;
+
+    --shot-shadow:
+      0 1px 2px 0 rgb(16 20 30 / 0.07),
+      0 6px 14px -6px rgb(16 20 30 / 0.10),
+      0 26px 60px -28px rgb(16 20 30 / 0.28);
+    --shot-shadow-hover:
+      0 1px 2px 0 rgb(16 20 30 / 0.08),
+      0 8px 18px -6px rgb(16 20 30 / 0.12),
+      0 30px 70px -30px rgb(var(--color-primary) / 0.26),
+      0 26px 60px -28px rgb(16 20 30 / 0.28);
+  }
+
+  * {
+    border-color: rgb(var(--border-color) / var(--border-opacity));
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Offset anchor scrolling for the fixed header */
+    scroll-padding-top: 6rem;
+  }
+
+  html.light { color-scheme: light; }
+  html:not(.light) { color-scheme: dark; }
+
+  body {
+    background-color: rgb(var(--background));
+    color: rgb(var(--foreground));
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+
+  /* Display type uses the tighter display face + optical tracking */
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background: rgb(var(--color-primary) / 0.28);
+    color: rgb(var(--foreground));
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--color-primary));
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
   }
 }
 
-html {
-  scroll-behavior: smooth;
+/* ============================================================================
+   Scrollbars
+   ========================================================================== */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: rgb(var(--background)); }
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--surface-elevated));
+  border: 2px solid rgb(var(--background));
+  border-radius: 999px;
 }
+::-webkit-scrollbar-thumb:hover { background: rgb(var(--surface-hover)); }
 
-html.light {
-  color-scheme: light;
-}
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
 
-html:not(.light) {
-  color-scheme: dark;
-}
+/* ============================================================================
+   Component utilities — the shared visual language
+   ========================================================================== */
 
-body {
-  background-color: rgb(var(--background));
-  color: rgb(var(--foreground));
-  font-family: var(--font-sans);
-  overflow-x: hidden;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Custom scrollbar — dark */
-:not(.light) ::-webkit-scrollbar { width: 7px; height: 7px; }
-:not(.light) ::-webkit-scrollbar-track { background: rgb(var(--background)); }
-:not(.light) ::-webkit-scrollbar-thumb { background: rgb(var(--surface-elevated)); border-radius: 4px; }
-:not(.light) ::-webkit-scrollbar-thumb:hover { background: rgb(var(--surface)); }
-
-/* Custom scrollbar — light */
-.light ::-webkit-scrollbar { width: 7px; height: 7px; }
-.light ::-webkit-scrollbar-track { background: rgb(var(--background-secondary)); }
-.light ::-webkit-scrollbar-thumb { background: rgb(var(--surface-elevated)); border-radius: 4px; }
-.light ::-webkit-scrollbar-thumb:hover { background: rgb(var(--surface)); }
-
-/* Aether utilities */
-.aether-gradient-text {
+/* Eyebrow / kicker label above section headings */
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
   color: rgb(var(--color-primary));
 }
 
+/* Hairline surface card. One border, one lift, no glow soup. */
 .aether-card {
-  background: rgb(var(--background-secondary));
-  border: 1px solid rgba(var(--border-color) / var(--border-opacity));
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+  background: rgb(var(--surface) / 0.55);
+  border: 1px solid rgb(var(--border-color) / var(--border-opacity));
+  border-radius: var(--radius-xl);
+  transition:
+    border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .aether-card:hover {
-  border-color: rgba(var(--color-primary) / 0.35);
-  box-shadow: 0 12px 40px -10px rgba(var(--color-primary) / 0.12);
+  border-color: rgb(var(--color-primary) / 0.32);
+  background: rgb(var(--surface-elevated) / 0.7);
+  transform: translateY(-3px);
 }
 
+/* Glass chrome used for the header and floating chrome only */
+.aether-glass {
+  background: rgb(var(--background) / 0.72);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border-color: rgb(var(--border-color) / var(--border-opacity));
+}
+
+/* Engineering blueprint grid — structural, not decorative noise */
 .aether-grid {
   background-image:
-    linear-gradient(to right, rgba(var(--border-color) / 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(var(--border-color) / 0.04) 1px, transparent 1px);
-  background-size: 50px 50px;
+    linear-gradient(to right, rgb(var(--border-color) / var(--grid-opacity)) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(var(--border-color) / var(--grid-opacity)) 1px, transparent 1px);
+  background-size: 64px 64px;
 }
 
+/* A single restrained ember bloom. Replaces the old 130px-blur blobs. */
+.aether-bloom {
+  position: absolute;
+  pointer-events: none;
+  opacity: var(--bloom-opacity);
+  background: radial-gradient(
+    closest-side,
+    rgb(var(--color-primary) / 0.16),
+    rgb(var(--color-primary) / 0.05) 55%,
+    transparent 100%
+  );
+}
+
+/* Back-compat: legacy `.glow-orb` usages resolve to the restrained bloom
+   instead of a huge blurred blob. */
 .glow-orb {
   position: absolute;
-  border-radius: 50%;
-  filter: blur(130px);
   pointer-events: none;
+  border-radius: 50%;
+  opacity: calc(var(--bloom-opacity) * 0.55);
+  filter: blur(80px);
 }
 
-/* Reduced motion */
+/* Hairline rules that fade at both ends */
+.rule-fade {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgb(var(--border-color) / var(--border-opacity-strong)) 22%,
+    rgb(var(--border-color) / var(--border-opacity-strong)) 78%,
+    transparent
+  );
+}
+
+/* Ember text gradient for a single accented headline fragment */
+.text-ember-gradient {
+  background-image: linear-gradient(
+    100deg,
+    rgb(var(--color-primary)),
+    rgb(var(--color-primary-hover)) 55%,
+    rgb(var(--color-secondary))
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Animated underline for inline links */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.link-underline:hover::after { transform: scaleX(1); }
+
+/* ============================================================================
+   Background cinematography
+   Layered light, texture and falloff so every page reads as one continuous
+   photographed space instead of a stack of flat bands. All layers are
+   `pointer-events-none`, token-driven, and neutralised by the reduced-motion
+   block at the bottom of this file.
+   ========================================================================== */
+
+/* One ambient light field. Warm by default; `data-tone="cool"` for the fill. */
+.cine-field {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 9999px;
+  opacity: var(--bloom-opacity);
+  background: radial-gradient(
+    closest-side,
+    rgb(var(--bloom-warm) / var(--bloom-warm-alpha)),
+    rgb(var(--bloom-warm) / calc(var(--bloom-warm-alpha) * 0.28)) 52%,
+    transparent 100%
+  );
+}
+
+.cine-field[data-tone='cool'] {
+  background: radial-gradient(
+    closest-side,
+    rgb(var(--bloom-cool) / var(--bloom-cool-alpha)),
+    rgb(var(--bloom-cool) / calc(var(--bloom-cool-alpha) * 0.3)) 55%,
+    transparent 100%
+  );
+}
+
+/* Light pooling along the top edge — the "key light" above the fold. */
+.cine-horizon {
+  background: radial-gradient(
+    130% 62% at 50% -12%,
+    rgb(var(--bloom-warm) / 0.14),
+    rgb(var(--bloom-warm) / 0.04) 42%,
+    transparent 72%
+  );
+  opacity: var(--horizon-opacity);
+}
+
+/* Edge falloff. Dark theme gets a real vignette, light theme a whisper. */
+.cine-vignette {
+  background: radial-gradient(
+    122% 92% at 50% 42%,
+    transparent 44%,
+    rgb(0 0 0 / 0.32) 76%,
+    rgb(0 0 0 / 0.72) 100%
+  );
+  opacity: var(--vignette-opacity);
+}
+
+/* Film grain. Oversized and jittered so the shake never exposes an edge. */
+.cine-grain {
+  position: absolute;
+  inset: -150%;
+  background-repeat: repeat;
+  mix-blend-mode: overlay;
+  opacity: var(--grain-opacity);
+}
+
+/* Single slow sweep of light down the frame. */
+.cine-scan {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgb(var(--bloom-cool) / 0.55) 45%,
+    transparent
+  );
+  opacity: var(--scan-opacity);
+}
+
+/* Vertical fade for the blueprint grid so it never ends on a hard line. */
+.mask-y-fade {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 14%, black 86%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, black 14%, black 86%, transparent);
+}
+
+/* ============================================================================
+   Theme-conditional content
+   The theme is a `.light` class on <html>, not a media query, so screenshots
+   and art that ship in both themes swap with these instead of `dark:`.
+   ========================================================================== */
+.theme-dark-only { display: none; }
+html:not(.light) .theme-dark-only { display: block; }
+html:not(.light) .theme-light-only { display: none; }
+
+/* ============================================================================
+   Product screenshots — the cinematic device frame
+   ========================================================================== */
+.shot-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  border: 1px solid rgb(var(--border-color) / var(--border-opacity-strong));
+  background: rgb(var(--surface) / 0.6);
+  box-shadow: var(--shot-shadow);
+  transition:
+    border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* A single specular streak across the top edge of the glass. */
+.shot-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgb(255 255 255 / 0.07),
+    transparent 18%
+  );
+}
+
+.shot-frame:hover {
+  border-color: rgb(var(--color-primary) / 0.34);
+  box-shadow: var(--shot-shadow-hover);
+}
+
+.shot-frame--lift:hover { transform: translateY(-4px); }
+
+/* Edge fades for horizontally scrolling strips */
+.mask-x-fade {
+  mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+}
+
+/* Scroll reveal — opt in with data-reveal, promoted by the Reveal component */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-reveal='shown'] {
+  opacity: 1;
+  transform: none;
+}
+
+/* ============================================================================
+   Motion
+   ========================================================================== */
+@keyframes shimmer { 100% { transform: translateX(200%); } }
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes caret-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+  [data-reveal] { opacity: 1 !important; transform: none !important; }
+  /* Keep the atmosphere, drop the movement. */
+  .cine-grain { animation: none !important; }
+  .cine-scan { display: none !important; }
 }
 
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-50% - 0.75rem)); }
+}
 
-@keyframes shimmer {
-  100% { transform: translateX(200%); }
+@keyframes marquee-reverse {
+  0% { transform: translateX(calc(-50% - 0.75rem)); }
+  100% { transform: translateX(0); }
+}
+
+.animate-marquee {
+  animation: marquee 35s linear infinite;
+}
+
+.animate-marquee-reverse {
+  animation: marquee-reverse 35s linear infinite;
+}
+
+.animate-marquee:hover, .animate-marquee-reverse:hover {
+  animation-play-state: paused;
 }

@@ -1,26 +1,27 @@
-import * as React from "react"
-import { cn } from "@/lib/utils"
+import * as React from 'react';
+import { cn } from '@/lib/utils';
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: "default" | "primary" | "secondary" | "outline"
+  variant?: 'default' | 'primary' | 'secondary' | 'outline' | 'success' | 'warning';
 }
 
-function Badge({ className, variant = "default", ...props }: BadgeProps) {
+/** Small status pill. Every variant is contrast-checked in both themes. */
+function Badge({ className, variant = 'default', ...props }: BadgeProps) {
   return (
     <div
       className={cn(
-        "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
-        {
-          "border-transparent bg-surface text-foreground hover:bg-surface/80": variant === "default",
-          "border-transparent bg-primary text-foreground hover:bg-primary/80": variant === "primary",
-          "border-transparent bg-secondary text-foreground hover:bg-secondary/80": variant === "secondary",
-          "text-foreground border-border": variant === "outline",
-        },
+        'inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-micro font-semibold',
+        variant === 'default' && 'border-border bg-surface-elevated/70 text-text-secondary',
+        variant === 'primary' && 'border-primary/30 bg-primary/12 text-primary',
+        variant === 'secondary' && 'border-border-strong bg-foreground/5 text-foreground',
+        variant === 'outline' && 'border-border-strong bg-transparent text-text-secondary',
+        variant === 'success' && 'border-success/30 bg-success/12 text-success',
+        variant === 'warning' && 'border-warning/30 bg-warning/12 text-warning',
         className
       )}
       {...props}
     />
-  )
+  );
 }
 
-export { Badge }
+export { Badge };

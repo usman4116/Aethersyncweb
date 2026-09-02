@@ -1,119 +1,191 @@
 'use client';
 
-import {
-  Download,
-  Terminal,
-  Sparkles,
-  ChevronDown,
-  CheckCircle2,
-} from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import Link from 'next/link';
+import { Download, ArrowRight, Play, Shield, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Reveal } from '@/components/ui/Reveal';
 
-const DOWNLOAD_LINK =
-  'https://github.com/usman4116/Async-Login/releases/latest/download/AetherSync-Desktop-0.1.0-x64.exe';
-const LINUX_DOWNLOAD_LINK =
-  'https://github.com/usman4116/Async-Login/releases/latest/download/AetherSync-Desktop-0.1.0-linux-x64.tar.gz';
+const providers = [
+  'Anthropic Claude',
+  'OpenAI',
+  'DeepSeek',
+  'Google Gemini',
+  'Mistral AI',
+  'Ollama',
+  'Groq',
+  'Cohere',
+  'Together AI',
+  'Perplexity',
+  'xAI Grok',
+  'Amazon Bedrock',
+  'Azure OpenAI',
+  'Hugging Face',
+];
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen pt-32 pb-20 flex flex-col justify-center items-center overflow-hidden">
-      {/* Background Cinematic Atmosphere */}
-      <div className="pointer-events-none absolute inset-0 aether-grid opacity-30" />
+    <section className="relative w-full min-h-screen bg-background overflow-hidden flex flex-col justify-end pt-24 pb-0 border-b border-border transition-colors duration-300">
       
-      {/* Glowing Neon Plasma Orbs */}
-      <div className="glow-orb top-[10%] left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-primary/20 animate-pulse-glow" />
-      <div className="glow-orb top-[40%] right-[10%] w-[450px] h-[450px] bg-secondary/10 animate-float-slow" />
-      <div className="glow-orb top-[30%] left-[5%] w-[400px] h-[400px] bg-accent/15" />
-
-      {/* Hero Content Container */}
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
-        {/* Top Tag Pill */}
-        <div className="group relative inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-elevated/80 border border-primary/40 text-primary text-xs font-bold shadow-[0_0_15px_rgba(255,102,0,0.15)] mb-4 hover:shadow-[0_0_25px_rgba(255,102,0,0.3)] hover:border-primary/60 hover:bg-surface-elevated transition-all duration-300 cursor-default">
-          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/0 via-primary/10 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          <Sparkles size={14} className="text-primary animate-pulse" />
-          <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">AetherSync AI 2.0 • Autonomous Coding Agent & IDE</span>
-          <span className="relative z-10 hidden sm:inline text-muted">|</span>
-          <span className="relative z-10 hidden sm:inline text-text-secondary font-mono text-[11px] tracking-wide">Local-First & Fast</span>
-        </div>
-
-        {/* Pakistan Tagline Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-green-500/10 via-emerald-500/10 to-green-500/10 border border-green-500/30 text-green-500 text-[11px] font-extrabold uppercase tracking-widest mb-8 shadow-[0_0_10px_rgba(34,197,94,0.15)] hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all duration-300 cursor-default">
-          <span className="text-sm">🇵🇰</span>
-          <span>Pakistan's First AI-Based IDE Platform</span>
-        </div>
-
-        {/* Cinematic Headline */}
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-foreground leading-[1.1] max-w-4xl">
-          The Autonomous AI IDE Built for{' '}
-          <span className="text-primary">Precision, Privacy & Speed.</span>
-        </h1>
-
-        {/* Subtitle */}
-        <p className="mt-6 text-base sm:text-xl text-text-secondary max-w-2xl font-normal leading-relaxed">
-          Code at the speed of thought. Pair with autonomous coding agents that inspect repositories, edit multi-file codebases, and execute sandboxed terminal workflows.
-        </p>
-
-        {/* CTAs */}
-        <div className="mt-10 flex flex-col items-center justify-center gap-4 w-full max-w-lg">
-          {/* Primary row: Windows + Linux */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
-            <a href={DOWNLOAD_LINK} download className="w-full sm:w-auto">
-              <Button size="lg" variant="primary" className="w-full flex items-center justify-center gap-3">
-                <svg className="w-4 h-4 fill-current shrink-0" viewBox="0 0 88 88">
-                  <path d="M0 12.402l35.687-4.86.016 34.423-35.67.203zm35.67 33.529l.028 34.453L.028 75.48.016 45.728zm4.326-39.027L87.914 0v41.525l-47.918.278zm47.918 39.566l-.004 41.53-47.918-6.743V45.728z" />
-                </svg>
-                <span>Windows (.exe)</span>
-                <span className="rounded-lg bg-black/30 backdrop-blur-sm border border-white/10 px-2.5 py-1 font-mono text-[11px] font-semibold text-white/90">
-                  95 MB
-                </span>
-              </Button>
-            </a>
-
-            <a href={LINUX_DOWNLOAD_LINK} download className="w-full sm:w-auto">
-              <Button size="lg" variant="outline" className="w-full flex items-center justify-center gap-3">
-                <Terminal size={16} className="text-primary" />
-                <span>Linux (.tar.gz)</span>
-                <span className="rounded-lg bg-primary/10 border border-primary/20 px-2.5 py-1 font-mono text-[11px] font-semibold text-primary">
-                  115 MB
-                </span>
-              </Button>
-            </a>
-          </div>
-
-          {/* Secondary row: Live Demo */}
-          <a href="#live-preview" className="w-full sm:w-auto">
-            <Button size="lg" variant="glass" className="w-full flex items-center justify-center gap-2">
-              <Sparkles size={16} className="text-primary" />
-              <span>Interactive Live Demo</span>
-            </Button>
-          </a>
-        </div>
-
-        {/* Feature Badges under CTAs */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-text-secondary">
-          <div className="flex items-center gap-1.5">
-            <CheckCircle2 size={14} className="text-green-400" />
-            <span>100% Free & Open Ecosystem</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <CheckCircle2 size={14} className="text-green-400" />
-            <span>Bring Your Own API Keys</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <CheckCircle2 size={14} className="text-green-400" />
-            <span>Zero Telemetry on Code</span>
-          </div>
-        </div>
-
-        {/* Scroll down indicator */}
-        <a
-          href="#live-preview"
-          className="mt-14 inline-flex flex-col items-center gap-1 text-muted hover:text-primary transition-colors animate-bounce"
-        >
-          <span className="text-[11px] font-mono">EXPLORE DESKTOP WORKSPACE</span>
-          <ChevronDown size={16} />
-        </a>
+      {/* Full-bleed Bright Background Video */}
+      <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        <video 
+          src="/shots/hero-video.mp4" 
+          autoPlay 
+          loop 
+          muted 
+          playsInline 
+          className="w-full h-full object-cover opacity-90 scale-100 filter brightness-105 contrast-105"
+        />
       </div>
+
+      {/* Theme-Adaptive Bottom Gradient (Soft Black in Dark Mode, Soft White in Light Mode) */}
+      <div 
+        className="absolute inset-x-0 bottom-0 h-[50%] z-[1] pointer-events-none bg-gradient-to-t from-background via-background/60 via-60% to-transparent transition-colors duration-300"
+      />
+
+      {/* Peeking AetherSync "A" Mascot with Orange Background */}
+      <motion.div 
+        initial={{ x: 120, rotate: 10 }}
+        animate={{ x: 0, rotate: -5 }}
+        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+        className="absolute right-[-35px] lg:right-[-15px] bottom-48 lg:bottom-56 z-10 pointer-events-none select-none hidden md:block"
+      >
+        <motion.div 
+          animate={{ y: [0, -8, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+          className="relative w-36 h-48 lg:w-44 lg:h-56 bg-gradient-to-br from-[#ff7a2e] to-[#ff5700] rounded-l-[4rem] rounded-r-3xl shadow-[0_0_60px_rgba(255,108,26,0.6)] border-4 border-white/25 flex flex-col items-center justify-center p-4 pl-6"
+        >
+          {/* Eyes for the Mascot */}
+          <div className="flex items-center gap-4 mb-2">
+            <div className="w-3.5 h-4 bg-white rounded-full animate-bounce shadow-sm" style={{ animationDuration: '3s' }} />
+            <div className="w-3.5 h-4 bg-white rounded-full animate-bounce shadow-sm" style={{ animationDuration: '3s', animationDelay: '0.2s' }} />
+          </div>
+
+          {/* Big White A Logo */}
+          <div className="text-5xl lg:text-6xl font-black text-white font-display leading-none tracking-tighter drop-shadow-md">
+            A
+          </div>
+
+          {/* Cute Smile / Mouth */}
+          <div className="w-7 h-3.5 border-b-4 border-white rounded-full mt-1.5" />
+        </motion.div>
+      </motion.div>
+
+      {/* Main Bottom Grid Content Area */}
+      <div className="relative z-10 w-full max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end">
+          
+          {/* Left Side: Headline & Pakistan 1st AI IDE Badge */}
+          <div className="lg:col-span-6 xl:col-span-7">
+            <Reveal>
+              <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-background/80 backdrop-blur-md border border-border mb-5 shadow-lg transition-colors duration-300">
+                <span className="text-sm">🇵🇰</span>
+                <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse" />
+                <span className="text-[12px] font-mono font-bold tracking-wider text-foreground uppercase">
+                  Pakistan's 1st Autonomous AI IDE
+                </span>
+              </div>
+
+              <h1 className="text-[3.25rem] sm:text-[4.5rem] md:text-[5rem] lg:text-[5.5rem] font-black text-foreground leading-[0.98] tracking-tight drop-shadow-lg transition-colors duration-300">
+                Build with <br />
+                <span className="text-primary drop-shadow-[0_0_40px_rgba(255,108,26,0.7)]">
+                  AetherSync
+                </span>
+              </h1>
+            </Reveal>
+          </div>
+
+          {/* Right Side: Theme-Adaptive Control Box */}
+          <div className="lg:col-span-6 xl:col-span-5 flex flex-col justify-end">
+            <Reveal delay={150}>
+              <div className="p-6 sm:p-7 rounded-3xl bg-surface/85 backdrop-blur-2xl border border-border shadow-panel flex flex-col gap-5 transition-colors duration-300">
+                
+                {/* Feature Bulletins */}
+                <div className="flex flex-col gap-2.5">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/15 border border-primary/30 text-primary shrink-0 shadow-sm">
+                      <Sparkles size={14} />
+                    </span>
+                    <p className="text-[15px] font-medium text-foreground">
+                      <span className="font-semibold text-primary">AetherSync:</span> Your 10x Autonomous AI Coding Engineer
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-surface-elevated border border-border text-text-secondary shrink-0">
+                      <Shield size={14} />
+                    </span>
+                    <p className="text-[14px] text-text-secondary">
+                      100% local-first execution. Zero telemetry on your proprietary code.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row items-center gap-3 w-full">
+                  <Link href="/download" className="w-full sm:w-auto flex-1">
+                    <button className="flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-[#ff8642] hover:brightness-110 text-white font-bold px-6 h-[50px] rounded-xl shadow-[0_0_35px_rgba(255,108,26,0.35)] transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] w-full text-[15px]">
+                      <Download size={17} />
+                      Download Free
+                    </button>
+                  </Link>
+
+                  <a href="#live-workspace" className="w-full sm:w-auto flex-1">
+                    <button className="flex items-center justify-center gap-2 bg-surface-elevated hover:bg-surface-hover text-foreground font-medium px-6 h-[50px] rounded-xl border border-border backdrop-blur-sm transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] w-full text-[15px]">
+                      <Play size={15} className="text-primary fill-primary" />
+                      Live Workspace
+                    </button>
+                  </a>
+                </div>
+
+                {/* Footer Links & OS Badges */}
+                <div className="flex items-center justify-between pt-2.5 border-t border-border text-xs text-muted">
+                  <a 
+                    href="/docs" 
+                    className="inline-flex items-center gap-1 text-primary hover:text-primary-hover font-semibold transition-colors group"
+                  >
+                    Documentation <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
+                  </a>
+                  <span className="text-muted font-mono text-[11px]">
+                    macOS · Windows · Linux
+                  </span>
+                </div>
+
+              </div>
+            </Reveal>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Model Providers Marquee Strip Inside Hero (Theme-Adaptive) */}
+      <div className="relative z-10 w-full pt-4 pb-3 border-t border-border bg-background/80 backdrop-blur-md transition-colors duration-300">
+        <div className="mx-auto w-full max-w-shell px-5 sm:px-6 lg:px-8 mb-3">
+          <p className="text-center text-[12px] font-medium tracking-wide text-muted">
+            Works with the frontier models you already pay for — and the local ones you don&rsquo;t.
+          </p>
+        </div>
+
+        <div className="mask-x-fade flex overflow-hidden py-1">
+          {[0, 1].map((track) => (
+            <ul
+              key={track}
+              aria-hidden={track === 1}
+              className="flex shrink-0 animate-marquee items-center gap-10 pr-10"
+            >
+              {providers.map((name) => (
+                <li
+                  key={name}
+                  className="whitespace-nowrap font-display text-[0.875rem] font-semibold text-muted transition-colors duration-300 ease-cine hover:text-primary cursor-default"
+                >
+                  {name}
+                </li>
+              ))}
+            </ul>
+          ))}
+        </div>
+      </div>
+
     </section>
   );
 }

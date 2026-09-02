@@ -1,71 +1,107 @@
 'use client';
 
-import { X, Shield, FileText } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import { FileText, ShieldCheck, X } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
 
+const sections = [
+  {
+    title: 'Acceptance of terms',
+    body: 'By accessing, installing or using AetherSync Desktop you agree to comply with, and be legally bound by, these Terms of Service.',
+  },
+  {
+    title: 'Local-first data privacy',
+    body: 'AetherSync Desktop runs on your workstation. Project files, terminal logs and workspace state are stored on your own disk, and are never sold or harvested by AetherSync.',
+  },
+  {
+    title: 'Third-party AI services',
+    body: 'Code suggestions are processed by whichever provider you configure (OpenAI, Anthropic, a local model or a custom endpoint). Your interaction with those models is governed by that provider’s policies.',
+  },
+  {
+    title: 'Code ownership',
+    body: 'You retain full intellectual-property ownership of all source code, repositories and materials generated, edited or built with AetherSync Desktop.',
+  },
+  {
+    title: 'Acceptable use',
+    body: 'You agree not to use the software to create malicious software, conduct unauthorised penetration testing, or violate applicable laws and regulations.',
+  },
+];
+
+/** Accessible dialog: Escape closes, backdrop closes, focus moves in on open. */
 export function TermsModal({ onClose }: { onClose: () => void }) {
+  const panelRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    panelRef.current?.focus();
+
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = previous;
+    };
+  }, [onClose]);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 ">
-      <div className="flex max-h-[85vh] w-full max-w-xl flex-col rounded-2xl border border-border bg-surface shadow-2xl">
-        <div className="flex items-center justify-between border-b border-border px-5 py-4">
-          <div className="flex items-center gap-2">
-            <FileText size={18} className="text-primary" />
-            <h2 className="text-sm font-bold text-foreground">AetherSync Terms of Service & Privacy Policy</h2>
-          </div>
+    <div
+      role="presentation"
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-background/80 p-4 backdrop-blur-sm"
+    >
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="terms-title"
+        tabIndex={-1}
+        className="flex max-h-[85vh] w-full max-w-xl flex-col rounded-xl border border-border bg-background-secondary shadow-panel focus:outline-none"
+      >
+        <div className="flex items-center justify-between gap-4 border-b border-border px-5 py-4">
+          <h2 id="terms-title" className="flex items-center gap-2 text-[0.875rem] font-semibold text-foreground">
+            <FileText size={16} className="text-primary" aria-hidden />
+            Terms of Service &amp; Privacy Policy
+          </h2>
           <button
+            type="button"
             onClick={onClose}
-            className="rounded-lg p-1 text-text-secondary hover:bg-surface-elevated hover:text-foreground transition-colors"
+            aria-label="Close"
+            className="rounded-md p-1 text-muted transition-colors duration-300 ease-cine hover:bg-surface-hover hover:text-foreground"
           >
             <X size={16} />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-6 py-5 text-xs text-text-secondary space-y-4 leading-relaxed">
-          <div>
-            <h3 className="font-semibold text-foreground mb-1">1. Acceptance of Terms</h3>
-            <p className="text-text-secondary">
-              By accessing, installing, or utilizing AetherSync Desktop, you agree to comply with and be legally bound by these Terms of Service.
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-foreground mb-1">2. Local-First Data Privacy</h3>
-            <p className="text-text-secondary">
-              AetherSync Desktop runs locally on your workstation. Your project files, terminal logs, and local workspace code are stored exclusively on your hard drive and are never sold or harvested by AetherSync.
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-foreground mb-1">3. Third-Party AI Services</h3>
-            <p className="text-text-secondary">
-              AI generations and code suggestions are processed through configured providers (e.g. OpenAI, Anthropic, or custom endpoints). Your interaction with AI models is subject to the respective provider policies.
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-foreground mb-1">4. Code Ownership</h3>
-            <p className="text-text-secondary">
-              You retain 100% intellectual property ownership of all source code, software, repositories, and materials generated, edited, or built using AetherSync Desktop.
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-foreground mb-1">5. Acceptable Use</h3>
-            <p className="text-text-secondary">
-              You agree not to use the software to create malicious software, conduct unauthorized penetration testing, or violate applicable laws and regulations.
-            </p>
-          </div>
+        <div className="flex-1 space-y-5 overflow-y-auto px-6 py-5">
+          {sections.map((s, i) => (
+            <section key={s.title}>
+              <h3 className="text-[0.8125rem] font-semibold text-foreground">
+                <span className="mr-2 font-mono text-micro text-primary">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                {s.title}
+              </h3>
+              <p className="mt-1.5 text-[0.8125rem] leading-relaxed text-text-secondary">
+                {s.body}
+              </p>
+            </section>
+          ))}
         </div>
 
-        <div className="flex items-center justify-between border-t border-border bg-surface px-6 py-3.5">
-          <span className="flex items-center gap-1 text-[11px] text-muted">
-            <Shield size={12} className="text-emerald-500" /> End-to-End Encrypted
+        <div className="flex items-center justify-between gap-4 border-t border-border px-5 py-3.5">
+          <span className="inline-flex items-center gap-1.5 text-micro text-muted">
+            <ShieldCheck size={12} className="text-success" aria-hidden /> Credentials encrypted in
+            the OS keyring
           </span>
-          <button
-            onClick={onClose}
-            className="px-4 py-1.5 rounded-xl bg-primary text-foreground text-xs font-semibold hover:bg-orange-600 transition-colors"
-          >
-            I Agree
-          </button>
+          <Button size="sm" onClick={onClose}>
+            I agree
+          </Button>
         </div>
       </div>
     </div>

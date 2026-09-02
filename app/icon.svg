@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 188 188" width="188" height="188">
+  <defs>
+    <linearGradient id="plate" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ff6306"/>
+      <stop offset="0.55" stop-color="#fd5502"/>
+      <stop offset="1" stop-color="#fd5903"/>
+    </linearGradient>
+  </defs>
+  <rect x="0.5" y="0" width="187" height="188" rx="12.5" fill="url(#plate)"/>
+  <path
+    fill="#ffffff"
+    fill-rule="evenodd"
+    d="M81 40 H105 L145 146 H123 L115 123.5 H71 L63 146 H41 Z
+       M93 63.5 L108.4 104.5 H77.6 Z"
+  />
+</svg>

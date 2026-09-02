@@ -1,15 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import { Cpu, ShieldCheck, ExternalLink, ChevronDown, ChevronUp, Terminal } from 'lucide-react';
+import { ChevronDown, ChevronUp, ChevronRight, ShieldCheck, Terminal } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { Section } from '@/components/layout/Section';
+import { SectionHeader } from '@/components/ui/SectionHeader';
+import { cn } from '@/lib/utils';
 
 /* ── All providers ─────────────────────────────────────────── */
 const providers = [
   {
     id: 'anthropic',
     name: 'Anthropic Claude',
-    icon: '🟣',
+    domain: 'anthropic.com',
     models: ['claude-3-7-sonnet-20250219', 'claude-3-5-sonnet', 'claude-3-opus'],
     tag: 'Best for Coding',
     endpoint: 'https://api.anthropic.com/v1/messages',
@@ -25,7 +28,7 @@ const providers = [
   {
     id: 'openai',
     name: 'OpenAI (GPT-4o & o3)',
-    icon: '⚡',
+    domain: 'openai.com',
     models: ['gpt-4o', 'gpt-4o-mini', 'o3-mini', 'o1-preview'],
     tag: 'Fast & Versatile',
     endpoint: 'https://api.openai.com/v1/chat/completions',
@@ -41,7 +44,7 @@ const providers = [
   {
     id: 'deepseek',
     name: 'DeepSeek (R1 & V3)',
-    icon: '🔵',
+    domain: 'deepseek.com',
     models: ['deepseek-reasoner', 'deepseek-chat'],
     tag: 'Cost-Effective',
     endpoint: 'https://api.deepseek.com/v1/chat/completions',
@@ -57,7 +60,7 @@ const providers = [
   {
     id: 'ollama',
     name: 'Ollama / Local LLM',
-    icon: '🖥️',
+    domain: 'ollama.com',
     models: ['qwen2.5-coder:32b', 'deepseek-r1:14b', 'codellama'],
     tag: '100% Offline',
     endpoint: 'http://localhost:11434/v1/chat/completions',
@@ -73,7 +76,7 @@ const providers = [
   {
     id: 'gemini',
     name: 'Google Gemini',
-    icon: '💎',
+    domain: 'gemini.google.com',
     models: ['gemini-2.5-pro', 'gemini-1.5-pro'],
     tag: 'Multimodal',
     endpoint: 'https://generativelanguage.googleapis.com/v1beta',
@@ -89,7 +92,7 @@ const providers = [
   {
     id: 'mistral',
     name: 'Mistral AI',
-    icon: '🌊',
+    domain: 'mistral.ai',
     models: ['mistral-large-latest', 'codestral-latest'],
     tag: 'Open Source',
     endpoint: 'https://api.mistral.ai/v1/chat/completions',
@@ -105,7 +108,7 @@ const providers = [
   {
     id: 'cohere',
     name: 'Cohere Command',
-    icon: '🔶',
+    domain: 'cohere.com',
     models: ['command-r-plus', 'command-r'],
     tag: 'Enterprise',
     endpoint: 'https://api.cohere.ai/v1/chat',
@@ -121,7 +124,7 @@ const providers = [
   {
     id: 'groq',
     name: 'Groq (LPU)',
-    icon: '🚀',
+    domain: 'groq.com',
     models: ['llama-3.3-70b-versatile', 'mixtral-8x7b-32768'],
     tag: 'Ultra Fast',
     endpoint: 'https://api.groq.com/openai/v1/chat/completions',
@@ -137,7 +140,7 @@ const providers = [
   {
     id: 'together',
     name: 'Together AI',
-    icon: '🤝',
+    domain: 'together.ai',
     models: ['meta-llama/Llama-3-70b-chat-hf', 'Qwen/Qwen2.5-Coder-32B-Instruct'],
     tag: 'Open Models',
     endpoint: 'https://api.together.xyz/v1/chat/completions',
@@ -153,7 +156,7 @@ const providers = [
   {
     id: 'perplexity',
     name: 'Perplexity AI',
-    icon: '🔍',
+    domain: 'perplexity.ai',
     models: ['sonar-reasoning-pro', 'sonar-pro'],
     tag: 'Search+AI',
     endpoint: 'https://api.perplexity.ai/chat/completions',
@@ -169,7 +172,7 @@ const providers = [
   {
     id: 'xai',
     name: 'xAI Grok',
-    icon: '🌐',
+    domain: 'x.ai',
     models: ['grok-2', 'grok-2-vision'],
     tag: 'Real-time',
     endpoint: 'https://api.x.ai/v1/chat/completions',
@@ -185,7 +188,7 @@ const providers = [
   {
     id: 'openrouter',
     name: 'OpenRouter',
-    icon: '🔀',
+    domain: 'openrouter.ai',
     models: ['anthropic/claude-3.5-sonnet', 'google/gemini-2.5-pro'],
     tag: 'Unified API',
     endpoint: 'https://openrouter.ai/api/v1/chat/completions',
@@ -201,7 +204,7 @@ const providers = [
   {
     id: 'bedrock',
     name: 'Amazon Bedrock',
-    icon: '☁️',
+    domain: 'aws.amazon.com',
     models: ['anthropic.claude-3-5-sonnet', 'meta.llama3'],
     tag: 'AWS Native',
     endpoint: 'AWS Region Endpoint',
@@ -217,7 +220,7 @@ const providers = [
   {
     id: 'azure',
     name: 'Azure OpenAI',
-    icon: '🏢',
+    domain: 'azure.microsoft.com',
     models: ['gpt-4o', 'o1-preview'],
     tag: 'Enterprise',
     endpoint: 'Your Custom Azure Endpoint URL',
@@ -233,7 +236,7 @@ const providers = [
   {
     id: 'huggingface',
     name: 'Hugging Face',
-    icon: '🤗',
+    domain: 'huggingface.co',
     models: ['meta-llama/Llama-3-70B-Instruct', 'Qwen/Qwen2.5-Coder-32B'],
     tag: 'OSS Hub',
     endpoint: 'https://api-inference.huggingface.co/models/',
@@ -249,7 +252,7 @@ const providers = [
   {
     id: 'jan',
     name: 'Jan AI',
-    icon: '🔒',
+    domain: 'jan.ai',
     models: ['local-model-id'],
     tag: 'Local Privacy',
     endpoint: 'http://localhost:1337/v1/chat/completions',
@@ -271,95 +274,161 @@ export function ProvidersSection() {
 
   const featured = providers.slice(0, 4);
   const allOtherProviders = providers.slice(4);
+  const active = providers[selected];
 
   const handleSelect = (idx: number) => {
     setSelected(idx);
     setShowSetup(false);
-    
-    // Smooth scroll to detail panel if on mobile
+
+    // On narrow viewports the detail panel sits below the list — bring it up.
     if (window.innerWidth < 1024) {
-      document.getElementById('provider-detail-panel')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      document
+        .getElementById('provider-detail-panel')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
 
   return (
-    <section id="providers" className="relative py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="text-center max-w-3xl mx-auto mb-14">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/25 text-primary text-xs font-semibold mb-3">
-          <Cpu size={12} />
-          <span>Universal Model Ecosystem</span>
-        </div>
-        <h2 className="text-3xl sm:text-5xl font-extrabold text-foreground tracking-tight">
-          Bring Your Own <span className="text-primary">AI Provider</span>
-        </h2>
-        <p className="mt-3 text-muted text-sm sm:text-base">
-          AetherSync is model-agnostic. Plug in your own API key or run local open-source models with zero vendor lock-in. All providers feature one-click setup.
-        </p>
-      </div>
+    <Section id="providers" className="border-b border-border">
+      <SectionHeader
+        eyebrow="Universal model ecosystem"
+        title={
+          <>
+            Bring your own <span className="text-ember-gradient">AI provider.</span>
+          </>
+        }
+        description={`AetherSync is model-agnostic. Plug in your own API key or run local open-source models with zero vendor lock-in — ${providers.length} providers ship configured out of the box.`}
+      />
 
-      {/* Main Layout Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+      <div className="mt-14 grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
         
-        {/* Detail Panel (Always shows selected provider) */}
-        <div id="provider-detail-panel" className="lg:col-span-2 rounded-2xl border border-border bg-surface p-6 sm:p-8 shadow-xl order-first lg:order-last">
-          <div className="flex items-center justify-between border-b border-border pb-5">
+        {/* Left Column: Grid of Logos */}
+        <div className="rounded-xl border border-border bg-surface/45 p-6 sm:p-8 lg:col-span-5 flex flex-col items-center">
+          <div className="w-full mb-6">
+            <span className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
+              {'{'} AVAILABLE PROVIDERS {'}'}
+            </span>
+            <h3 className="text-heading-sm font-semibold text-foreground mt-2">
+              Select a provider to configure
+            </h3>
+          </div>
+          
+          <div className="grid grid-cols-4 gap-4 w-full">
+            {(expanded ? providers : providers.slice(0, 8)).map((p, idx) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => handleSelect(idx)}
+                aria-pressed={selected === idx}
+                className={cn(
+                  'aspect-square rounded-2xl flex items-center justify-center transition-all duration-300 ease-cine border group relative',
+                  selected === idx
+                    ? 'border-primary bg-surface-elevated shadow-[0_0_15px_rgba(255,108,26,0.15)] ring-1 ring-primary'
+                    : 'border-white/5 bg-background hover:border-white/20 hover:bg-surface-hover/50'
+                )}
+                title={p.name}
+              >
+                <img 
+                  src={`https://icon.horse/icon/${p.domain}`} 
+                  alt={`${p.name} logo`} 
+                  className={cn(
+                    "w-8 h-8 object-contain transition-transform duration-300",
+                    selected === idx ? "scale-110" : "group-hover:scale-110 opacity-70 group-hover:opacity-100"
+                  )} 
+                  aria-hidden 
+                />
+              </button>
+            ))}
+          </div>
+          
+          <div className="w-full mt-6 flex items-center gap-4 text-xs font-semibold text-muted">
+            <button 
+              onClick={() => setExpanded(!expanded)}
+              className="flex items-center gap-1 hover:text-primary transition-colors duration-300 ease-cine"
+            >
+              {expanded ? 'Hide extra providers' : `Explore ${providers.length - 8} more`} 
+              <ChevronRight size={14} className={cn("transition-transform duration-300 ease-cine", expanded ? "rotate-90" : "")} />
+            </button>
+            <button className="flex items-center gap-1 hover:text-primary transition-colors duration-300 ease-cine">
+              View documentation <ChevronRight size={14} />
+            </button>
+          </div>
+        </div>
+
+        {/* Right Column: Detail Panel */}
+        <div
+          id="provider-detail-panel"
+          className="rounded-xl border border-border bg-surface/45 p-6 sm:p-8 lg:col-span-7 h-full flex flex-col justify-center"
+        >
+          <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-5">
             <div>
-              <h3 className="text-xl font-bold text-foreground flex items-center gap-2">
-                <span>{providers[selected].icon}</span>{providers[selected].name}
+              <h3 className="flex items-center gap-3 font-display text-heading font-semibold text-foreground">
+                <div className="w-10 h-10 rounded-xl bg-background border border-white/5 flex items-center justify-center shrink-0">
+                  <img src={`https://icon.horse/icon/${active.domain}`} alt={`${active.name} logo`} className="w-6 h-6 object-contain" aria-hidden />
+                </div>
+                {active.name}
               </h3>
-              <p className="text-xs text-muted mt-0.5">{providers[selected].desc}</p>
+              <p className="mt-2.5 max-w-prose text-label text-text-secondary">{active.desc}</p>
             </div>
-            <div className="hidden sm:flex px-3 py-1 rounded-full bg-green-500/15 text-green-500 border border-green-500/30 text-xs font-semibold items-center gap-1.5 shrink-0">
-              <ShieldCheck size={14} /> Full Agent Verified
-            </div>
+            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-success/30 bg-success/12 px-2 py-1 text-micro font-semibold text-success">
+              <ShieldCheck size={13} aria-hidden /> Full agent verified
+            </span>
           </div>
 
-          <div className="mt-6 space-y-4">
+          <div className="mt-8 space-y-8">
             <div>
-              <label className="text-[11px] font-mono text-muted uppercase tracking-wider block mb-1.5">
-                Target Endpoint
-              </label>
-              <div className="p-3 rounded-xl bg-background border border-border font-mono text-xs text-primary truncate">
-                {providers[selected].endpoint}
+              <p className="kicker mb-3">Target endpoint</p>
+              <div className="truncate rounded-lg border border-border bg-background px-4 py-3 font-mono text-[11px] text-primary">
+                {active.endpoint}
               </div>
             </div>
+
             <div>
-              <label className="text-[11px] font-mono text-muted uppercase tracking-wider block mb-1.5">
-                Supported Models
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {providers[selected].models.map((m, i) => (
+              <p className="kicker mb-3">Supported models</p>
+              <div className="flex flex-wrap gap-2.5">
+                {active.models.map((m) => (
                   <span
-                    key={i}
-                    className="px-3 py-1 rounded-lg bg-surface-elevated border border-border text-xs font-mono text-foreground"
+                    key={m}
+                    className="rounded-md border border-border bg-background px-3 py-1.5 font-mono text-[11px] text-text-secondary"
                   >
                     {m}
                   </span>
                 ))}
               </div>
             </div>
-            <div className="pt-3 border-t border-border">
-              <div className="flex items-center justify-between text-xs text-muted">
-                <span className="flex items-center gap-1.5"><ShieldCheck size={14} className="text-primary"/> Encrypted locally in OS Keyring</span>
+
+            <div className="border-t border-border pt-6 mt-6">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <span className="inline-flex items-center gap-1.5 text-label text-muted">
+                  <ShieldCheck size={13} className="text-primary" aria-hidden />
+                  Encrypted locally in the OS keyring
+                </span>
                 <button
+                  type="button"
                   onClick={() => setShowSetup(!showSetup)}
-                  className="text-primary hover:text-primary/80 font-semibold flex items-center gap-1 transition-colors"
+                  aria-expanded={showSetup}
+                  className="inline-flex items-center gap-1 text-label font-semibold text-primary transition-colors duration-300 ease-cine hover:text-primary-hover"
                 >
-                  {showSetup ? 'Hide Setup Details' : 'Click to Setup'} 
-                  <ChevronDown size={14} className={`transform transition-transform ${showSetup ? 'rotate-180' : ''}`} />
+                  {showSetup ? 'Hide setup details' : 'Show setup steps'}
+                  <ChevronDown
+                    size={13}
+                    className={cn(
+                      'transition-transform duration-300 ease-cine',
+                      showSetup && 'rotate-180'
+                    )}
+                  />
                 </button>
               </div>
-              
+
               {showSetup && (
-                <div className="mt-4 p-4 rounded-xl bg-background border border-border animate-in fade-in slide-in-from-top-2">
-                  <h4 className="text-[11px] font-mono text-muted uppercase tracking-wider mb-3 flex items-center gap-2">
-                    <Terminal size={12} /> End-to-End Setup Instructions
-                  </h4>
-                  <ol className="space-y-3 text-sm text-foreground">
-                    {providers[selected].setup.map((step, idx) => (
-                      <li key={idx} className="flex gap-2.5 items-start">
-                        <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary font-mono text-[10px] shrink-0 mt-0.5">
+                <div className="mt-5 rounded-lg border border-border bg-background p-6">
+                  <p className="kicker mb-4 flex items-center gap-2">
+                    <Terminal size={12} aria-hidden /> End-to-end setup
+                  </p>
+                  <ol className="space-y-4">
+                    {active.setup.map((step, idx) => (
+                      <li key={step} className="flex items-start gap-3 text-[0.875rem] text-foreground">
+                        <span className="mt-px flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-primary/30 bg-primary/12 font-mono text-[10px] font-bold text-primary">
                           {idx + 1}
                         </span>
                         <span className="leading-relaxed">{step}</span>
@@ -371,74 +440,7 @@ export function ProvidersSection() {
             </div>
           </div>
         </div>
-
-        {/* Top 4 Provider List */}
-        <div className="lg:col-span-1 space-y-3 lg:order-first">
-          {featured.map((p, idx) => (
-            <button
-              key={p.id}
-              onClick={() => handleSelect(idx)}
-              className={`w-full text-left p-4 rounded-2xl border transition-all duration-200 ${
-                selected === idx
-                  ? 'border-primary/50 bg-surface-elevated shadow-lg shadow-primary/10'
-                  : 'border-border bg-surface hover:bg-surface-elevated'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-sm text-foreground flex items-center gap-2">
-                  <span>{p.icon}</span>{p.name}
-                </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-primary/15 text-primary">
-                  {p.tag}
-                </span>
-              </div>
-              <p className="text-xs text-muted mt-1 line-clamp-2">{p.desc}</p>
-            </button>
-          ))}
-          
-          {/* Explore More Button within the column layout */}
-          <Button
-            variant="outline"
-            onClick={() => setExpanded(!expanded)}
-            className="w-full mt-2 flex items-center justify-center gap-2 bg-surface border-border hover:bg-surface-elevated"
-          >
-            {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-            {expanded ? 'Hide Extra Providers' : `Explore ${allOtherProviders.length}+ More`}
-          </Button>
-        </div>
       </div>
-
-      {/* Expanded Providers Grid */}
-      {expanded && (
-        <div className="mt-8 pt-8 border-t border-border animate-in fade-in">
-          <div className="text-center mb-6">
-            <h4 className="text-sm font-bold text-foreground">More Supported Providers</h4>
-            <p className="text-xs text-muted mt-1">Click on any provider to view setup instructions.</p>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-            {allOtherProviders.map((p, idx) => {
-              const globalIdx = idx + 4; // offset by featured length
-              return (
-                <button
-                  key={p.id}
-                  onClick={() => handleSelect(globalIdx)}
-                  className={`aether-card rounded-xl p-4 flex flex-col items-center text-center gap-2 transition-all duration-200 ${
-                    selected === globalIdx
-                      ? 'border-primary/50 bg-surface-elevated shadow-lg shadow-primary/10 scale-105'
-                      : 'hover:border-primary/30'
-                  }`}
-                >
-                  <span className="text-2xl">{p.icon}</span>
-                  <span className="text-xs font-bold text-foreground leading-tight">{p.name}</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-semibold border border-primary/20">
-                    {p.tag}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
-    </section>
+    </Section>
   );
 }

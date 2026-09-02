@@ -1,64 +1,121 @@
+import { Key, RefreshCw, ShieldCheck } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { ProvidersSection } from '@/components/ProvidersSection';
-import { Cpu, ShieldCheck, Key, RefreshCw, Zap } from 'lucide-react';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { Section } from '@/components/layout/Section';
+import { ShotFrame } from '@/components/ui/ShotFrame';
 
 export const metadata = {
-  title: 'API Providers & Model Compatibility | AetherSync AI IDE',
-  description: 'Configure Anthropic Claude 3.7, OpenAI GPT-4o, DeepSeek R1, or local Ollama LLMs with AetherSync Desktop.',
+  title: 'Model Providers — Claude, GPT-4o, DeepSeek, Ollama',
+  description:
+    'Every model provider AetherSync AI supports, and how to configure each one: Anthropic Claude, OpenAI GPT-4o, DeepSeek R1, Groq, Mistral and fully local Ollama or LM Studio inference.',
+  keywords: [
+    'AetherSync IDE providers',
+    'AetherSync AI models',
+    'Claude coding IDE',
+    'GPT-4o IDE',
+    'DeepSeek R1 IDE',
+    'Ollama local AI IDE',
+  ],
+  openGraph: {
+    title: 'Model Providers — Claude, GPT-4o, DeepSeek & Ollama in AetherSync IDE',
+    description: 'Every model provider AetherSync AI supports, and how to configure each one: Anthropic Claude, OpenAI GPT-4o, DeepSeek R1, Groq, Mistral and fully local Ollama or LM Studio inference.',
+    url: '/providers',
+    type: 'website',
+  },
+  alternates: { canonical: '/providers' },
 };
+
+const guarantees = [
+  {
+    icon: Key,
+    title: 'OS keyring storage',
+    desc: 'API secrets are encrypted locally with the native Windows Credential Manager and Electron safeStorage APIs.',
+  },
+  {
+    icon: RefreshCw,
+    title: 'Dynamic hot-swapping',
+    desc: 'Move from Claude 3.7 to DeepSeek R1 mid-conversation without interrupting a running terminal task.',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Zero intermediary proxies',
+    desc: 'Requests stream directly from your machine to the provider. There is no relay in the middle to log them.',
+  },
+];
 
 export default function ProvidersPage() {
   return (
-    <div className="relative min-h-screen bg-background text-foreground">
+    <div className="relative min-h-screen text-foreground">
       <Navbar />
 
-      {/* Header */}
-      <section className="relative pt-36 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
-        <div className="glow-orb top-24 left-1/2 -translate-x-1/2 w-[550px] h-[350px] bg-primary/15" />
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/10 border border-primary/25 text-primary text-xs font-semibold mb-4">
-          <Cpu size={13} />
-          <span>Universal Model Ecosystem</span>
-        </div>
-        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-foreground leading-tight">
-          Supported <span className="aether-gradient-text">AI Providers &amp; LLMs</span>
-        </h1>
-        <p className="mt-4 text-base sm:text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">
-          Zero lock-in. Connect your own API keys or run completely offline with local GPUs.
-        </p>
-      </section>
+      <main>
+        <PageHeader
+          eyebrow="Universal model ecosystem"
+          title="Supported AI providers and local LLMs."
+          description="Zero lock-in. Connect your own API keys, or run completely offline against a model on your own GPU."
+        />
 
-      {/* Interactive Provider Hub Component */}
-      <div className="pb-16">
         <ProvidersSection />
-      </div>
 
-      {/* Security & Keyring Info */}
-      <section className="pb-24 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="aether-card rounded-2xl p-6">
-            <Key size={22} className="text-primary mb-3" />
-            <h3 className="text-base font-bold text-foreground mb-1.5">OS Keyring Storage</h3>
-            <p className="text-xs text-text-secondary leading-relaxed">
-              API secrets are encrypted locally with native Windows Credential Manager / safeStorage APIs.
-            </p>
+        {/* The pane itself, from the shipped build */}
+        <Section spacing="tight" className="border-t border-border">
+          <div className="grid gap-10 lg:grid-cols-[1fr_1.5fr] lg:items-center lg:gap-14">
+            <div>
+              <h2 className="text-heading font-semibold text-foreground">
+                Add a provider in about twenty seconds.
+              </h2>
+              <p className="mt-4 text-body text-text-secondary">
+                Pick a preset or paste any OpenAI- or Anthropic-compatible base URL, name the
+                model and test the connection. Keys are handed to the operating system credential
+                store — Keychain, Credential Manager or libsecret — never to a config file in your
+                project.
+              </p>
+              <ul className="mt-7 space-y-px overflow-hidden rounded-lg border border-border bg-border">
+                {[
+                  'Presets for OpenAI, Anthropic, OpenRouter, Groq, NVIDIA NIM, Together, Fireworks, Mistral',
+                  'Ollama and LM Studio for fully local inference',
+                  'Test Connection before you save',
+                ].map((line) => (
+                  <li
+                    key={line}
+                    className="flex items-start gap-3 bg-background-secondary/80 px-4 py-3 text-label text-text-secondary"
+                  >
+                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-primary" aria-hidden />
+                    {line}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <ShotFrame
+              src="/shots/providers-dark.webp"
+              alt="AetherSync IDE settings: provider configuration with quick presets, API format, base URL, API key and model fields"
+              caption="Settings — Provider configuration"
+              sizes="(min-width: 1024px) 58vw, 100vw"
+              glow
+            />
           </div>
-          <div className="aether-card rounded-2xl p-6">
-            <RefreshCw size={22} className="text-primary mb-3" />
-            <h3 className="text-base font-bold text-foreground mb-1.5">Dynamic Hot-Swapping</h3>
-            <p className="text-xs text-text-secondary leading-relaxed">
-              Switch from Claude 3.7 to DeepSeek R1 mid-conversation without interrupting terminal tasks.
-            </p>
+        </Section>
+
+        <Section spacing="tight">
+          <div className="grid gap-4 md:grid-cols-3">
+            {guarantees.map((g) => (
+              <div key={g.title} className="rounded-xl border border-border bg-surface/45 p-6">
+                <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-background text-primary">
+                  <g.icon size={16} />
+                </span>
+                <h2 className="mt-5 font-display text-[1rem] font-semibold text-foreground">
+                  {g.title}
+                </h2>
+                <p className="mt-2.5 text-[0.875rem] leading-relaxed text-text-secondary">
+                  {g.desc}
+                </p>
+              </div>
+            ))}
           </div>
-          <div className="aether-card rounded-2xl p-6">
-            <ShieldCheck size={22} className="text-primary mb-3" />
-            <h3 className="text-base font-bold text-foreground mb-1.5">Zero Intermediary Proxies</h3>
-            <p className="text-xs text-text-secondary leading-relaxed">
-              Requests stream directly from your machine to Anthropic / OpenAI / Ollama with no MITM proxy.
-            </p>
-          </div>
-        </div>
-      </section>
+        </Section>
+      </main>
 
       <Footer />
     </div>

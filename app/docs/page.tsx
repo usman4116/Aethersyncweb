@@ -1,25 +1,23 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
-import { 
-  Terminal, 
-  BookOpen, 
-  Search, 
-  Copy, 
-  CheckCircle2, 
-  ChevronRight, 
-  MessageSquareCode, 
-  Keyboard, 
+import { Eyebrow } from '@/components/ui/Eyebrow';
+import {
+  Check,
+  ChevronRight,
+  Copy,
   HelpCircle,
-  FolderOpen,
-  Key,
-  Play
+  Keyboard,
+  MessageSquareCode,
+  Play,
+  Search,
+  Terminal,
 } from 'lucide-react';
 
-/* ── Helper Component for Copyable Code Blocks ── */
-function CodeBlock({ code, language = 'bash' }: { code: string, language?: string }) {
+/* ── Copyable code block ───────────────────────────────────────────── */
+function CodeBlock({ code, language = 'bash' }: { code: string; language?: string }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -29,59 +27,99 @@ function CodeBlock({ code, language = 'bash' }: { code: string, language?: strin
   };
 
   return (
-    <div className="relative group rounded-xl bg-surface border border-border overflow-hidden my-4">
-      <div className="flex items-center justify-between px-4 py-2 bg-background border-b border-border">
-        <span className="text-[11px] font-mono text-muted uppercase tracking-wider">{language}</span>
-        <button 
+    <div className="my-5 overflow-hidden rounded-xl border border-border bg-surface">
+      <div className="flex items-center justify-between border-b border-border bg-background px-4 py-2.5">
+        <span className="font-mono text-micro uppercase tracking-wider text-muted">{language}</span>
+        <button
           onClick={handleCopy}
-          className="text-muted hover:text-foreground transition-colors flex items-center gap-1.5 text-xs"
+          className="flex items-center gap-1.5 text-micro font-medium text-muted transition-colors duration-200 ease-cine hover:text-foreground"
         >
-          {copied ? <CheckCircle2 size={13} className="text-green-500" /> : <Copy size={13} />}
-          {copied ? 'Copied!' : 'Copy'}
+          {copied ? <Check size={13} className="text-success" /> : <Copy size={13} />}
+          {copied ? 'Copied' : 'Copy'}
         </button>
       </div>
-      <div className="p-4 overflow-x-auto">
-        <code className="text-sm font-mono text-primary/90 whitespace-pre">{code}</code>
+      <div className="overflow-x-auto p-4">
+        <code className="whitespace-pre font-mono text-label leading-relaxed text-text-secondary">
+          {code}
+        </code>
       </div>
     </div>
   );
 }
 
-/* ── FAQ Accordion Item ── */
-function FaqItem({ question, answer }: { question: string, answer: React.ReactNode }) {
+/* ── FAQ accordion ─────────────────────────────────────────────────── */
+function FaqItem({ question, answer }: { question: string; answer: React.ReactNode }) {
   const [open, setOpen] = useState(false);
-  
+
   return (
-    <div className="border border-border rounded-xl bg-surface overflow-hidden mb-3">
-      <button 
+    <div className="border-b border-border">
+      <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between p-4 text-left hover:bg-surface-elevated transition-colors"
+        aria-expanded={open}
+        className="flex w-full items-center justify-between gap-6 py-5 text-left"
       >
-        <span className="font-semibold text-foreground text-sm">{question}</span>
-        <ChevronRight size={16} className={`text-muted transform transition-transform ${open ? 'rotate-90' : ''}`} />
+        <span className="text-[0.9375rem] font-medium text-foreground">{question}</span>
+        <ChevronRight
+          size={16}
+          className={`shrink-0 text-muted transition-transform duration-200 ease-cine ${
+            open ? 'rotate-90 text-primary' : ''
+          }`}
+          aria-hidden
+        />
       </button>
       {open && (
-        <div className="p-4 pt-0 text-sm text-text-secondary border-t border-border mt-2 leading-relaxed">
-          {answer}
-        </div>
+        <div className="max-w-prose pb-5 text-label leading-relaxed text-text-secondary">{answer}</div>
       )}
     </div>
   );
 }
 
-export default function DocsPage() {
-  const [activeSection, setActiveSection] = useState('quickstart');
+const NAV = [
+  { id: 'quickstart', label: 'Quickstart guide', icon: Play },
+  { id: 'installation', label: 'Advanced installation', icon: Terminal },
+  { id: 'prompting', label: 'Prompting practices', icon: MessageSquareCode },
+  { id: 'shortcuts', label: 'Keyboard shortcuts', icon: Keyboard },
+  { id: 'faq', label: 'FAQs', icon: HelpCircle },
+] as const;
 
-  // Simple scroll spy functionality
+const steps = [
+  {
+    title: 'Install the desktop app',
+    body: 'Download and run the installer. The deep-linking protocol is registered automatically.',
+  },
+  {
+    title: 'Authenticate',
+    body: 'Sign in through the browser portal, or paste provider API keys directly in Settings.',
+  },
+  {
+    title: 'Open a project',
+    body: 'Press Ctrl+O to load a folder. The workspace sandbox is scoped to that directory.',
+  },
+  {
+    title: 'Start coding',
+    body: 'Open the Agent tab and give it a task like “refactor the authentication flow”.',
+  },
+];
+
+const shortcuts = [
+  ['Open command palette', 'Ctrl + P'],
+  ['Toggle integrated terminal', 'Ctrl + `'],
+  ['Open project workspace', 'Ctrl + O'],
+  ['New agent chat session', 'Ctrl + K'],
+  ['Interrupt running agent', 'Escape'],
+];
+
+export default function DocsPage() {
+  const [activeSection, setActiveSection] = useState<string>('quickstart');
+
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['quickstart', 'installation', 'prompting', 'shortcuts', 'faq'];
-      for (const section of sections) {
-        const el = document.getElementById(section);
+      for (const { id } of NAV) {
+        const el = document.getElementById(id);
         if (el) {
           const rect = el.getBoundingClientRect();
           if (rect.top >= 0 && rect.top <= 300) {
-            setActiveSection(section);
+            setActiveSection(id);
             break;
           }
         }
@@ -97,220 +135,220 @@ export default function DocsPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-background text-foreground">
+    <div className="relative min-h-screen text-foreground">
       <Navbar />
 
-      <div className="pt-28 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col md:flex-row gap-10">
-        
-        {/* ── Left Sidebar Navigation ── */}
-        <aside className="hidden md:block w-64 shrink-0">
+      <div className="mx-auto flex w-full max-w-shell flex-col gap-14 px-5 pb-24 pt-32 sm:px-6 lg:flex-row lg:gap-16 lg:px-8">
+        {/* ── Sidebar ── */}
+        <aside className="hidden w-60 shrink-0 lg:block">
           <div className="sticky top-28 space-y-8">
-            
-            {/* Search Placeholder */}
-            <div className="relative group cursor-text">
-              <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                <Search size={14} className="text-muted group-hover:text-primary transition-colors" />
-              </div>
-              <input 
-                type="text" 
-                placeholder="Search docs..." 
-                className="w-full bg-surface border border-border rounded-xl pl-9 pr-14 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted"
+            <div className="relative">
+              <Search
+                size={14}
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted"
+                aria-hidden
               />
-              <div className="absolute inset-y-0 right-2 flex items-center">
-                <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono font-medium text-muted bg-background border border-border rounded">Ctrl K</kbd>
-              </div>
+              <input
+                type="text"
+                placeholder="Search docs..."
+                aria-label="Search documentation"
+                className="h-10 w-full rounded-lg border border-border bg-surface pl-9 pr-16 text-label text-foreground outline-none transition-colors duration-200 ease-cine placeholder:text-muted focus-visible:border-primary/50"
+              />
+              <kbd className="absolute right-2 top-1/2 -translate-y-1/2 rounded border border-border bg-background px-1.5 py-0.5 font-mono text-[0.625rem] text-muted">
+                Ctrl K
+              </kbd>
             </div>
 
-            {/* Nav Links */}
-            <nav className="space-y-1">
-              <h4 className="text-[11px] font-bold uppercase tracking-wider text-muted mb-3 pl-2">Documentation</h4>
-              
-              <button onClick={() => scrollTo('quickstart')} className={`w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'quickstart' ? 'bg-primary/10 text-primary font-semibold' : 'text-text-secondary hover:text-foreground hover:bg-surface'}`}>
-                <Play size={14} /> Quickstart Guide
-              </button>
-              <button onClick={() => scrollTo('installation')} className={`w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'installation' ? 'bg-primary/10 text-primary font-semibold' : 'text-text-secondary hover:text-foreground hover:bg-surface'}`}>
-                <Terminal size={14} /> Advanced Installation
-              </button>
-              <button onClick={() => scrollTo('prompting')} className={`w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'prompting' ? 'bg-primary/10 text-primary font-semibold' : 'text-text-secondary hover:text-foreground hover:bg-surface'}`}>
-                <MessageSquareCode size={14} /> Prompting Best Practices
-              </button>
-              <button onClick={() => scrollTo('shortcuts')} className={`w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'shortcuts' ? 'bg-primary/10 text-primary font-semibold' : 'text-text-secondary hover:text-foreground hover:bg-surface'}`}>
-                <Keyboard size={14} /> Keyboard Shortcuts
-              </button>
-              <button onClick={() => scrollTo('faq')} className={`w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'faq' ? 'bg-primary/10 text-primary font-semibold' : 'text-text-secondary hover:text-foreground hover:bg-surface'}`}>
-                <HelpCircle size={14} /> FAQs
-              </button>
+            <nav className="space-y-0.5" aria-label="Documentation sections">
+              <p className="kicker mb-3 pl-3">Documentation</p>
+              {NAV.map(({ id, label, icon: Icon }) => (
+                <button
+                  key={id}
+                  onClick={() => scrollTo(id)}
+                  aria-current={activeSection === id ? 'true' : undefined}
+                  className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-label transition-colors duration-200 ease-cine ${
+                    activeSection === id
+                      ? 'bg-primary/10 font-medium text-primary'
+                      : 'text-text-secondary hover:bg-surface-hover/60 hover:text-foreground'
+                  }`}
+                >
+                  <Icon size={14} aria-hidden />
+                  {label}
+                </button>
+              ))}
             </nav>
           </div>
         </aside>
 
-        {/* ── Main Content Area ── */}
-        <main className="flex-1 min-w-0 max-w-4xl pb-24">
-          
-          <div className="mb-12">
-            <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-foreground leading-tight mb-4">
-              AetherSync <span className="text-primary">Documentation</span>
+        {/* ── Content ── */}
+        <main className="min-w-0 flex-1">
+          <div className="max-w-3xl">
+            <Eyebrow rule>Developer documentation</Eyebrow>
+            <h1 className="mt-5 text-display-sm font-bold text-foreground">
+              Set up, configure and master AetherSync.
             </h1>
-            <p className="text-lg text-text-secondary leading-relaxed">
-              Everything you need to set up, configure, and master the AetherSync autonomous coding environment.
+            <p className="mt-5 max-w-prose text-body-lg text-text-secondary">
+              Everything required to run the autonomous coding environment locally — from a first
+              install to advanced agent prompting.
             </p>
           </div>
 
-          <div className="space-y-16">
-            
+          <div className="mt-16 space-y-20">
             {/* Quickstart */}
-            <section id="quickstart" className="scroll-mt-32">
-              <h2 className="text-2xl font-bold text-foreground mb-6 pb-2 border-b border-border flex items-center gap-2">
-                <Play className="text-primary" /> Quickstart Guide
+            <section id="quickstart" className="scroll-mt-28">
+              <h2 className="flex items-center gap-2.5 border-b border-border pb-4 font-display text-heading font-semibold text-foreground">
+                <Play size={20} className="text-primary" aria-hidden /> Quickstart guide
               </h2>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="aether-card rounded-xl p-5">
-                  <div className="w-8 h-8 rounded-lg bg-primary text-foreground font-black text-sm flex items-center justify-center mb-3">1</div>
-                  <h3 className="font-bold text-foreground mb-2">Install Desktop</h3>
-                  <p className="text-xs text-text-secondary">Download and run the installer. The deep-linking protocol is automatically registered.</p>
-                </div>
-                <div className="aether-card rounded-xl p-5">
-                  <div className="w-8 h-8 rounded-lg bg-primary text-foreground font-black text-sm flex items-center justify-center mb-3">2</div>
-                  <h3 className="font-bold text-foreground mb-2">Authenticate</h3>
-                  <p className="text-xs text-text-secondary">Sign in via the browser portal or input your specific API keys in Settings.</p>
-                </div>
-                <div className="aether-card rounded-xl p-5">
-                  <div className="w-8 h-8 rounded-lg bg-primary text-foreground font-black text-sm flex items-center justify-center mb-3">3</div>
-                  <h3 className="font-bold text-foreground mb-2">Open Project</h3>
-                  <p className="text-xs text-text-secondary">Press <kbd className="px-1.5 py-0.5 bg-surface-elevated rounded border border-border mx-1">Ctrl+O</kbd> to load your folder.</p>
-                </div>
-                <div className="aether-card rounded-xl p-5">
-                  <div className="w-8 h-8 rounded-lg bg-primary text-foreground font-black text-sm flex items-center justify-center mb-3">4</div>
-                  <h3 className="font-bold text-foreground mb-2">Start Coding</h3>
-                  <p className="text-xs text-text-secondary">Open the Agent tab and give it a prompt like "Refactor the authentication flow".</p>
-                </div>
-              </div>
+
+              <ol className="mt-8 grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2">
+                {steps.map((s, i) => (
+                  <li key={s.title} className="bg-surface/45 p-6">
+                    <span className="font-mono text-micro text-primary">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <h3 className="mt-3 text-[0.9375rem] font-semibold text-foreground">{s.title}</h3>
+                    <p className="mt-2 text-label leading-relaxed text-text-secondary">{s.body}</p>
+                  </li>
+                ))}
+              </ol>
             </section>
 
-            {/* Advanced Installation */}
-            <section id="installation" className="scroll-mt-32">
-              <h2 className="text-2xl font-bold text-foreground mb-6 pb-2 border-b border-border flex items-center gap-2">
-                <Terminal className="text-primary" /> Advanced Installation (CLI)
+            {/* Advanced installation */}
+            <section id="installation" className="scroll-mt-28">
+              <h2 className="flex items-center gap-2.5 border-b border-border pb-4 font-display text-heading font-semibold text-foreground">
+                <Terminal size={20} className="text-primary" aria-hidden /> Advanced installation (CLI)
               </h2>
-              
-              <p className="text-sm text-text-secondary mb-4">
-                For power users on Linux, you can extract and run the standalone binaries directly from the terminal without standard installation routines.
+
+              <p className="mt-6 max-w-prose text-[0.875rem] leading-relaxed text-text-secondary">
+                On Linux you can extract and run the standalone binary directly, without the
+                installer routine.
               </p>
-              
-              <CodeBlock 
-                language="bash" 
-                code={`# Download the Linux Archive
+
+              <CodeBlock
+                language="bash"
+                code={`# Download the Linux archive
 wget https://github.com/usman4116/Async-Login/releases/latest/download/AetherSync-Desktop-0.1.0-linux-x64.tar.gz
 
 # Extract to your applications directory
 tar -xzf AetherSync-Desktop-0.1.0-linux-x64.tar.gz -C ~/.local/bin/
 
-# Make the executable runable
+# Make the executable runnable
 chmod +x ~/.local/bin/AetherSync/aethersync
 
 # Run the IDE
-~/.local/bin/AetherSync/aethersync`} 
+~/.local/bin/AetherSync/aethersync`}
               />
             </section>
 
-            {/* Prompting Best Practices */}
-            <section id="prompting" className="scroll-mt-32">
-              <h2 className="text-2xl font-bold text-foreground mb-6 pb-2 border-b border-border flex items-center gap-2">
-                <MessageSquareCode className="text-primary" /> Agent Prompting Best Practices
+            {/* Prompting */}
+            <section id="prompting" className="scroll-mt-28">
+              <h2 className="flex items-center gap-2.5 border-b border-border pb-4 font-display text-heading font-semibold text-foreground">
+                <MessageSquareCode size={20} className="text-primary" aria-hidden /> Agent prompting
+                practices
               </h2>
-              
-              <p className="text-sm text-text-secondary mb-6">
-                AetherSync autonomous agents operate best when given clear context and constraints. Follow these patterns to achieve the highest accuracy in multi-file refactors.
+
+              <p className="mt-6 max-w-prose text-[0.875rem] leading-relaxed text-text-secondary">
+                Autonomous agents work best with explicit context, constraints and a verification
+                step. These two prompts differ only in specificity.
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-5">
-                  <h4 className="text-red-500 font-bold text-sm mb-2 flex items-center gap-1.5">
-                    <span className="text-lg">❌</span> Avoid Vague Prompts
-                  </h4>
-                  <p className="text-xs text-text-secondary italic">"Fix the login page design and make it look better."</p>
-                  <p className="text-[11px] text-muted mt-3">Why it fails: No context on which files represent the "login page", no specific definition of "better", and no clear stop condition.</p>
+              <div className="mt-8 grid gap-4 sm:grid-cols-2">
+                <div className="rounded-xl border border-error/25 bg-error/[0.07] p-6">
+                  <p className="text-micro font-semibold uppercase tracking-wider text-error">
+                    Avoid — vague
+                  </p>
+                  <p className="mt-3 font-mono text-label leading-relaxed text-text-secondary">
+                    “Fix the login page design and make it look better.”
+                  </p>
+                  <p className="mt-4 text-micro leading-relaxed text-muted">
+                    No context on which files are the login page, no definition of “better”, and no
+                    stop condition.
+                  </p>
                 </div>
 
-                <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-5">
-                  <h4 className="text-emerald-500 font-bold text-sm mb-2 flex items-center gap-1.5">
-                    <span className="text-lg">✅</span> Use Explicit Constraints
-                  </h4>
-                  <p className="text-xs text-text-secondary italic">"In app/login/page.tsx, replace the generic blue button with the new primary button component from components/ui/Button.tsx. Run npm run build afterwards to verify."</p>
-                  <p className="text-[11px] text-muted mt-3">Why it works: Explicit file paths, clear component replacements, and an actionable verification step.</p>
+                <div className="rounded-xl border border-success/25 bg-success/[0.07] p-6">
+                  <p className="text-micro font-semibold uppercase tracking-wider text-success">
+                    Prefer — explicit
+                  </p>
+                  <p className="mt-3 font-mono text-label leading-relaxed text-text-secondary">
+                    “In app/login/page.tsx, replace the generic blue button with the primary Button
+                    from components/ui/Button.tsx. Run npm run build afterwards to verify.”
+                  </p>
+                  <p className="mt-4 text-micro leading-relaxed text-muted">
+                    Explicit paths, a named replacement, and an actionable verification step.
+                  </p>
                 </div>
               </div>
             </section>
 
-            {/* Keyboard Shortcuts */}
-            <section id="shortcuts" className="scroll-mt-32">
-              <h2 className="text-2xl font-bold text-foreground mb-6 pb-2 border-b border-border flex items-center gap-2">
-                <Keyboard className="text-primary" /> Essential Keyboard Shortcuts
+            {/* Shortcuts */}
+            <section id="shortcuts" className="scroll-mt-28">
+              <h2 className="flex items-center gap-2.5 border-b border-border pb-4 font-display text-heading font-semibold text-foreground">
+                <Keyboard size={20} className="text-primary" aria-hidden /> Essential keyboard
+                shortcuts
               </h2>
-              
-              <div className="aether-card rounded-xl overflow-hidden">
-                <table className="w-full text-sm text-left">
-                  <thead className="bg-surface-elevated text-xs uppercase text-muted">
+
+              <div className="mt-8 overflow-hidden rounded-xl border border-border">
+                <table className="w-full text-left text-label">
+                  <thead className="bg-surface-elevated">
                     <tr>
-                      <th className="px-6 py-4 font-semibold">Action</th>
-                      <th className="px-6 py-4 font-semibold text-right">Shortcut</th>
+                      <th className="px-6 py-3.5 text-micro font-semibold uppercase tracking-wider text-muted">
+                        Action
+                      </th>
+                      <th className="px-6 py-3.5 text-right text-micro font-semibold uppercase tracking-wider text-muted">
+                        Shortcut
+                      </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-border">
-                    <tr className="hover:bg-surface-elevated/50 transition-colors">
-                      <td className="px-6 py-3 text-foreground">Open Command Palette</td>
-                      <td className="px-6 py-3 text-right"><kbd className="px-2 py-1 rounded bg-surface border border-border text-xs font-mono">Ctrl + P</kbd></td>
-                    </tr>
-                    <tr className="hover:bg-surface-elevated/50 transition-colors">
-                      <td className="px-6 py-3 text-foreground">Toggle Integrated Terminal</td>
-                      <td className="px-6 py-3 text-right"><kbd className="px-2 py-1 rounded bg-surface border border-border text-xs font-mono">Ctrl + `</kbd></td>
-                    </tr>
-                    <tr className="hover:bg-surface-elevated/50 transition-colors">
-                      <td className="px-6 py-3 text-foreground">Open Project Workspace</td>
-                      <td className="px-6 py-3 text-right"><kbd className="px-2 py-1 rounded bg-surface border border-border text-xs font-mono">Ctrl + O</kbd></td>
-                    </tr>
-                    <tr className="hover:bg-surface-elevated/50 transition-colors">
-                      <td className="px-6 py-3 text-foreground">New Agent Chat Session</td>
-                      <td className="px-6 py-3 text-right"><kbd className="px-2 py-1 rounded bg-surface border border-border text-xs font-mono">Ctrl + K</kbd></td>
-                    </tr>
-                    <tr className="hover:bg-surface-elevated/50 transition-colors">
-                      <td className="px-6 py-3 text-foreground">Interrupt Running Agent</td>
-                      <td className="px-6 py-3 text-right"><kbd className="px-2 py-1 rounded bg-surface border border-border text-xs font-mono">Escape</kbd></td>
-                    </tr>
+                  <tbody className="divide-y divide-border bg-surface/45">
+                    {shortcuts.map(([action, keys]) => (
+                      <tr key={action}>
+                        <td className="px-6 py-3.5 text-text-secondary">{action}</td>
+                        <td className="px-6 py-3.5 text-right">
+                          <kbd className="rounded border border-border bg-background px-2 py-1 font-mono text-micro text-foreground">
+                            {keys}
+                          </kbd>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
             </section>
 
-            {/* FAQs */}
-            <section id="faq" className="scroll-mt-32">
-              <h2 className="text-2xl font-bold text-foreground mb-6 pb-2 border-b border-border flex items-center gap-2">
-                <HelpCircle className="text-primary" /> Frequently Asked Questions
+            {/* FAQ */}
+            <section id="faq" className="scroll-mt-28">
+              <h2 className="flex items-center gap-2.5 border-b border-border pb-4 font-display text-heading font-semibold text-foreground">
+                <HelpCircle size={20} className="text-primary" aria-hidden /> Frequently asked
+                questions
               </h2>
-              
-              <FaqItem 
-                question="Where are my API keys stored?" 
-                answer="AetherSync is entirely local-first. Your API keys are encrypted and stored exclusively in your operating system's native keychain (e.g., Windows Credential Manager or macOS Keychain). We never transmit them to our servers." 
-              />
-              <FaqItem 
-                question="Does AetherSync collect telemetry or my code data?" 
-                answer={
-                  <>
-                    No. AetherSync has a strict <strong>Zero Telemetry on Code</strong> policy. We do not track your keystrokes, we do not upload your source code, and we do not use your proprietary data to train our own models. Your code only goes to the LLM provider you explicitly select.
-                  </>
-                } 
-              />
-              <FaqItem 
-                question="Can I use local models completely offline?" 
-                answer="Yes! By selecting the Ollama or LM Studio provider in the settings, AetherSync will route all agent logic to your localhost port. This allows for 100% air-gapped, offline autonomous coding without spending a dime on API costs." 
-              />
-              <FaqItem 
-                question="Is this just a wrapper around GPT-4?" 
-                answer="No. AetherSync is a fundamentally different architecture from standard chat interfaces. It features a continuous feedback loop where the agent can run terminal commands (like npm run build or cargo test), read the console output, and autonomously correct its own code before presenting it to you." 
-              />
-            </section>
 
+              <div className="mt-4">
+                <FaqItem
+                  question="Where are my API keys stored?"
+                  answer="AetherSync is entirely local-first. Your API keys are encrypted and stored exclusively in your operating system's native keychain (Windows Credential Manager, macOS Keychain, or libsecret). They are never transmitted to our servers."
+                />
+                <FaqItem
+                  question="Does AetherSync collect telemetry or my code data?"
+                  answer={
+                    <>
+                      No. AetherSync has a strict <strong className="text-foreground">zero
+                      telemetry on code</strong> policy. We do not track keystrokes, upload source
+                      code, or train models on your proprietary data. Your code only reaches the LLM
+                      provider you explicitly select.
+                    </>
+                  }
+                />
+                <FaqItem
+                  question="Can I use local models completely offline?"
+                  answer="Yes. Selecting the Ollama or LM Studio provider routes all agent logic to your localhost port, allowing fully air-gapped autonomous coding with no API cost."
+                />
+                <FaqItem
+                  question="Is this just a wrapper around GPT-4?"
+                  answer="No. AetherSync runs a continuous feedback loop: the agent executes terminal commands (npm run build, cargo test), reads the console output, and corrects its own code before presenting a diff."
+                />
+              </div>
+            </section>
           </div>
         </main>
       </div>
