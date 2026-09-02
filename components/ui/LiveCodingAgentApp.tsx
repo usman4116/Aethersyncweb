@@ -63,9 +63,9 @@ export function LiveCodingAgentApp({ className = '' }: LiveCodingAgentAppProps) 
             <Terminal size={12} /> Terminal
           </div>
           <div className="flex items-center gap-2 pl-3 border-l border-[var(--ide-border)]">
-            <Minus size={13} className="hover:text-[var(--ide-text-bright)] cursor-pointer" />
-            <Square size={11} className="hover:text-[var(--ide-text-bright)] cursor-pointer" />
-            <X size={13} className="hover:text-red-400 cursor-pointer" />
+            <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e] cursor-pointer" />
+            <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123] cursor-pointer" />
+            <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29] cursor-pointer" />
           </div>
         </div>
       </div>

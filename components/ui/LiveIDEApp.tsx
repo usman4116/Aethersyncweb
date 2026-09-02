@@ -385,10 +385,28 @@ export function LiveIDEApp() {
             <Terminal size={13} /> Terminal
           </button>
 
-          <div className="flex items-center gap-3 ml-1 border-l border-[var(--ide-border)] pl-3">
-            <Minus size={14} className="hover:text-[var(--ide-text-bright)] cursor-pointer" onClick={() => setShowTerminal(false)} title="Minimize terminal" />
-            <Square size={12} className="hover:text-[var(--ide-text-bright)] cursor-pointer" onClick={() => setShowTerminal(true)} title="Maximize terminal" />
-            <X size={14} className="hover:text-red-400 cursor-pointer" onClick={() => { setFiles(DEFAULT_FILES); setProjectName(DEFAULT_PROJECT_NAME); }} title="Reset project" />
+          <div className="flex items-center gap-2 ml-2 pl-3 border-l border-[var(--ide-border)]">
+            <button 
+              onClick={() => { setFiles(DEFAULT_FILES); setProjectName(DEFAULT_PROJECT_NAME); }}
+              title="Close / Reset workspace"
+              className="w-3 h-3 rounded-full bg-[#ff5f56] hover:brightness-90 transition-all cursor-pointer border border-[#e0443e] shadow-sm flex items-center justify-center group"
+            >
+              <X size={7} className="opacity-0 group-hover:opacity-100 text-[#5f0000]" />
+            </button>
+            <button 
+              onClick={() => setShowTerminal(false)}
+              title="Minimize terminal"
+              className="w-3 h-3 rounded-full bg-[#ffbd2e] hover:brightness-90 transition-all cursor-pointer border border-[#dea123] shadow-sm flex items-center justify-center group"
+            >
+              <Minus size={7} className="opacity-0 group-hover:opacity-100 text-[#5f3f00]" />
+            </button>
+            <button 
+              onClick={() => setShowTerminal(true)}
+              title="Expand / Maximize terminal"
+              className="w-3 h-3 rounded-full bg-[#27c93f] hover:brightness-90 transition-all cursor-pointer border border-[#1aab29] shadow-sm flex items-center justify-center group"
+            >
+              <Plus size={7} className="opacity-0 group-hover:opacity-100 text-[#004f00]" />
+            </button>
           </div>
         </div>
       </div>
