@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Eyebrow } from '@/components/ui/Eyebrow';
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
+import { RelatedLinks } from '@/components/seo/RelatedLinks';
 import {
   Check,
   ChevronRight,
@@ -183,6 +185,7 @@ export default function DocsPage() {
         {/* ── Content ── */}
         <main className="min-w-0 flex-1">
           <div className="max-w-3xl">
+            <Breadcrumbs path="/docs" />
             <Eyebrow rule>Developer documentation</Eyebrow>
             <h1 className="mt-5 text-display-sm font-bold text-foreground">
               Set up, configure and master AetherSync.
@@ -350,6 +353,8 @@ chmod +x ~/.local/bin/AetherSync/aethersync
               </div>
             </section>
           </div>
+
+          <RelatedLinks path="/docs" className="mt-20" />
         </main>
       </div>
 

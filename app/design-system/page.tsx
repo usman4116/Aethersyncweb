@@ -7,13 +7,19 @@ import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Input } from '@/components/ui/Input';
 import { Eyebrow } from '@/components/ui/Eyebrow';
+import { buildMetadata } from '@/lib/seo';
 
-export const metadata = {
-  title: 'Design System | AetherSync',
+/**
+ * Internal reference. `buildMetadata` reads `noindex` off the route table and
+ * emits `noindex, follow` — crawlable so the directive is actually seen, and
+ * `follow` so the links out of it still pass equity to the real pages.
+ */
+export const metadata = buildMetadata({
+  path: '/design-system',
+  title: 'Design System',
   description:
     'The AetherSync design language: colour tokens, type scale, elevation, motion and component primitives.',
-  robots: { index: false, follow: false },
-};
+});
 
 const swatches = [
   { name: 'background', cls: 'bg-background', note: 'Page ground' },
@@ -54,6 +60,7 @@ export default function DesignSystemPage() {
 
       <main>
         <PageHeader
+          path="/design-system"
           eyebrow="Internal reference"
           title="The AetherSync design language."
           description="One token layer, one card treatment, one button language and one motion curve — the primitives every page on this site is built from."

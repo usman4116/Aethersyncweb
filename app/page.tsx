@@ -10,6 +10,11 @@ import { AboutSection } from '@/components/AboutSection';
 import { Testimonials } from '@/components/Testimonials';
 import { CtaBand } from '@/components/CtaBand';
 import { Footer } from '@/components/Footer';
+import { RelatedLinks } from '@/components/seo/RelatedLinks';
+import { INDEXABLE_ROUTES } from '@/lib/site';
+
+/** The home page links to every indexable route, not just the first few. */
+const ALL_PAGES = INDEXABLE_ROUTES.filter((route) => route.path !== '/');
 
 export default function HomePage() {
   return (
@@ -26,6 +31,11 @@ export default function HomePage() {
         <AboutSection />
         <Testimonials />
         <CtaBand />
+        <RelatedLinks
+          path="/"
+          routes={ALL_PAGES}
+          title="Explore AetherSync IDE"
+        />
       </main>
       <Footer />
     </div>

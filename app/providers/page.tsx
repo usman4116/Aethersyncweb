@@ -6,27 +6,26 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { Section } from '@/components/layout/Section';
 import { ShotFrame } from '@/components/ui/ShotFrame';
 import { LiveProvidersApp } from '@/components/ui/LiveProvidersApp';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { RelatedLinks } from '@/components/seo/RelatedLinks';
+import { buildMetadata, webPageJsonLd } from '@/lib/seo';
 
-export const metadata = {
-  title: 'Model Providers — Claude, GPT-4o, DeepSeek, Ollama',
+export const metadata = buildMetadata({
+  path: '/providers',
+  title: 'Model Providers — Claude, GPT-4o, DeepSeek & Ollama',
+  ogTitle: 'Model Providers — Claude, GPT-4o, DeepSeek & Ollama in AetherSync IDE',
   description:
     'Every model provider AetherSync AI supports, and how to configure each one: Anthropic Claude, OpenAI GPT-4o, DeepSeek R1, Groq, Mistral and fully local Ollama or LM Studio inference.',
   keywords: [
     'AetherSync IDE providers',
-    'AetherSync AI models',
+    'Aethersync AI models',
+    'AetherSync AI providers',
     'Claude coding IDE',
     'GPT-4o IDE',
     'DeepSeek R1 IDE',
     'Ollama local AI IDE',
   ],
-  openGraph: {
-    title: 'Model Providers — Claude, GPT-4o, DeepSeek & Ollama in AetherSync IDE',
-    description: 'Every model provider AetherSync AI supports, and how to configure each one: Anthropic Claude, OpenAI GPT-4o, DeepSeek R1, Groq, Mistral and fully local Ollama or LM Studio inference.',
-    url: '/providers',
-    type: 'website',
-  },
-  alternates: { canonical: '/providers' },
-};
+});
 
 const guarantees = [
   {
@@ -50,9 +49,18 @@ export default function ProvidersPage() {
   return (
     <div className="relative min-h-screen text-foreground">
       <Navbar />
+      <JsonLd
+        data={webPageJsonLd({
+          path: '/providers',
+          name: 'AetherSync AI Model Providers',
+          description:
+            'Every model provider AetherSync AI supports: Anthropic Claude, OpenAI GPT-4o, DeepSeek R1, Groq, Mistral and fully local Ollama or LM Studio inference.',
+        })}
+      />
 
       <main>
         <PageHeader
+          path="/providers"
           eyebrow="Universal model ecosystem"
           title="Supported AI providers and local LLMs."
           description="Zero lock-in. Connect your own API keys, or run completely offline against a model on your own GPU."
@@ -116,6 +124,7 @@ export default function ProvidersPage() {
             ))}
           </div>
         </Section>
+        <RelatedLinks path="/providers" />
       </main>
 
       <Footer />

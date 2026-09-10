@@ -77,7 +77,7 @@ export default function OpengraphImage() {
           </div>
         </div>
 
-        <div style={{ color: '#707685', fontSize: 24 }}>www.ai.aethersync.com</div>
+        <div style={{ color: '#707685', fontSize: 24 }}>ai.theaethersync.com</div>
       </div>
     ),
     size

@@ -7,13 +7,19 @@ import { Section } from '@/components/layout/Section';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Reveal } from '@/components/ui/Reveal';
 import { ArrowUpRight, Sparkles, Code2, Cpu, ShieldCheck, Terminal, Flame } from 'lucide-react';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { RelatedLinks } from '@/components/seo/RelatedLinks';
+import { buildMetadata, webPageJsonLd } from '@/lib/seo';
 
-export const metadata = {
+export const metadata = buildMetadata({
+  path: '/about',
   title: 'About AetherSync Technology — Founder Usman Farhan',
+  ogTitle: 'About AetherSync — Founder Usman Farhan & Team',
   description:
     'AetherSync Technology builds AetherSync IDE and AetherSync AI: autonomous developer platforms engineered so your source code never leaves your machine.',
   keywords: [
     'About AetherSync',
+    'Aethersync',
     'Usman Farhan',
     'Muhammad Usman Farhan',
     'AetherSync Founder',
@@ -21,14 +27,7 @@ export const metadata = {
     'AetherSync AI company',
     'AetherSync IDE team',
   ],
-  openGraph: {
-    title: 'About AetherSync — Founder Usman Farhan & Team',
-    description: 'AetherSync Technology builds AetherSync IDE and AetherSync AI: autonomous developer platforms engineered so your source code never leaves your machine.',
-    url: '/about',
-    type: 'website',
-  },
-  alternates: { canonical: '/about' },
-};
+});
 
 const ecosystem = ['Purple AI', 'Open ERP', 'Corpflow', 'Finraze', 'AetherSync AI IDE'];
 
@@ -36,9 +35,18 @@ export default function AboutPage() {
   return (
     <div className="relative min-h-screen text-foreground">
       <Navbar />
+      <JsonLd
+        data={webPageJsonLd({
+          path: '/about',
+          name: 'About AetherSync Technology',
+          description:
+            'AetherSync Technology builds AetherSync IDE and AetherSync AI: autonomous developer platforms engineered so your source code never leaves your machine.',
+        })}
+      />
 
       <main>
         <PageHeader
+          path="/about"
           eyebrow="Company & vision"
           title="About AetherSync Technology."
           description="Pioneering autonomous developer platforms that automate complex workflows and scale engineering speed."
@@ -233,6 +241,7 @@ export default function AboutPage() {
             </div>
           </Reveal>
         </Section>
+        <RelatedLinks path="/about" />
       </main>
 
       <Footer />

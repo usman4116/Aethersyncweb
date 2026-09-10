@@ -1,6 +1,5 @@
 import type { MetadataRoute } from 'next';
-
-const SITE_URL = 'https://www.ai.aethersync.com';
+import { absoluteUrl, SITE_URL } from '@/lib/site';
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -8,11 +7,17 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        // Internal reference page — useful for the team, noise for search.
-        disallow: ['/design-system'],
+        /**
+         * Nothing is disallowed on purpose. `/design-system` is kept out of the
+         * index by its `noindex` meta tag instead — a `Disallow` here would
+         * stop crawlers fetching the page at all, so they would never see that
+         * tag, and the URL could still surface as a bare, description-less
+         * result. Crawlable-but-noindex is the directive that actually works.
+         */
+        disallow: [],
       },
     ],
-    sitemap: `${SITE_URL}/sitemap.xml`,
+    sitemap: absoluteUrl('/sitemap.xml'),
     host: SITE_URL,
   };
 }

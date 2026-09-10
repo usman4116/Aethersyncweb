@@ -8,27 +8,26 @@ import { ShotFrame } from '@/components/ui/ShotFrame';
 import { Button } from '@/components/ui/Button';
 import { Reveal } from '@/components/ui/Reveal';
 import Link from 'next/link';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { RelatedLinks } from '@/components/seo/RelatedLinks';
+import { buildMetadata, webPageJsonLd } from '@/lib/seo';
 
-export const metadata = {
-  title: 'Features — Autonomous Agent & Sandboxed Terminal',
+export const metadata = buildMetadata({
+  path: '/features',
+  title: 'Features — Autonomous AI Agent & Sandboxed Terminal',
+  ogTitle: 'AetherSync IDE Features — Autonomous Agent, Sandboxed Terminal & Model Hub',
   description:
     'Every capability inside AetherSync AI: the autonomous multi-file coding agent, the local-first sandbox, the integrated PTY terminal, multi-provider model switching and the Monaco editor.',
   keywords: [
     'AetherSync IDE features',
+    'Aethersync IDE',
     'AetherSync AI features',
     'autonomous coding agent',
     'AI IDE sandboxed terminal',
     'multi-file refactoring AI',
     'Monaco AI code editor',
   ],
-  openGraph: {
-    title: 'AetherSync IDE Features — Autonomous Agent, Sandboxed Terminal & Model Hub',
-    description: 'Every capability inside AetherSync AI: the autonomous multi-file coding agent, the local-first sandbox, the integrated PTY terminal, multi-provider model switching and the Monaco editor.',
-    url: '/features',
-    type: 'website',
-  },
-  alternates: { canonical: '/features' },
-};
+});
 
 const featureDetails = [
   {
@@ -104,9 +103,18 @@ export default function FeaturesPage() {
   return (
     <div className="relative min-h-screen text-foreground">
       <Navbar />
+      <JsonLd
+        data={webPageJsonLd({
+          path: '/features',
+          name: 'AetherSync IDE Features',
+          description:
+            'Every capability inside AetherSync AI: the autonomous multi-file coding agent, the local-first sandbox, the integrated PTY terminal and multi-provider model switching.',
+        })}
+      />
 
       <main>
         <PageHeader
+          path="/features"
           eyebrow="Complete feature guide"
           title="Everything you need for autonomous engineering."
           description="An architectural review of the capabilities powering the AetherSync IDE and its desktop agent — what each subsystem does, and where its boundaries are."
@@ -193,6 +201,8 @@ export default function FeaturesPage() {
             </Reveal>
           </div>
         </Section>
+
+        <RelatedLinks path="/features" />
       </main>
 
       <Footer />

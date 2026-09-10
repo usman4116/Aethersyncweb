@@ -89,7 +89,7 @@ export function Hero() {
               <h1 className="text-[3.25rem] sm:text-[4.5rem] md:text-[5rem] lg:text-[5.5rem] font-black text-foreground leading-[0.98] tracking-tight drop-shadow-lg transition-colors duration-300">
                 Build with <br />
                 <span className="text-primary drop-shadow-[0_0_40px_rgba(255,108,26,0.7)]">
-                  AetherSync
+                  AetherSync IDE
                 </span>
               </h1>
             </Reveal>

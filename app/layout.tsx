@@ -2,24 +2,35 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { CinematicBackdrop } from '@/components/layout/CinematicBackdrop';
 import { FilmGrain } from '@/components/layout/FilmGrain';
-
-const SITE_URL = 'https://www.ai.aethersync.com';
+import {
+  absoluteUrl,
+  GITHUB_URL,
+  GROUP_URL,
+  INDEXABLE_ROUTES,
+  ORG_NAME,
+  PRODUCT_NAME,
+  SITE_NAME,
+  SITE_URL,
+} from '@/lib/site';
 
 export const metadata: Metadata = {
   title: {
     default: 'AetherSync IDE — Autonomous AI Code Editor | AetherSync AI',
-    template: '%s | AetherSync AI',
+    template: `%s | ${SITE_NAME}`,
   },
   description:
     'AetherSync IDE (AetherSync AI) is a local-first autonomous AI code editor and coding agent. Multi-file refactors, a sandboxed terminal, and Claude, GPT-4o, DeepSeek R1 or local Ollama models — your source code never leaves your machine.',
-  applicationName: 'AetherSync IDE',
+  applicationName: PRODUCT_NAME,
   keywords: [
     'AetherSync IDE',
     'AetherSync AI',
     'AetherSync',
+    'Aethersync IDE',
+    'Aethersync AI',
     'AetherSync AI IDE',
     'AetherSync Desktop',
     'AetherSync code editor',
+    'AetherSync Technology',
     'autonomous AI coding agent',
     'AI code editor',
     'local first AI IDE',
@@ -33,17 +44,17 @@ export const metadata: Metadata = {
   ],
   category: 'technology',
   authors: [{ name: 'AetherSync Team', url: SITE_URL }],
-  creator: 'AetherSync',
-  publisher: 'AetherSync',
+  creator: ORG_NAME,
+  publisher: ORG_NAME,
   metadataBase: new URL(SITE_URL),
   alternates: {
-    canonical: '/',
+    canonical: SITE_URL,
   },
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: SITE_URL,
-    siteName: 'AetherSync AI',
+    siteName: SITE_NAME,
     title: 'AetherSync IDE — The Autonomous AI Code Editor',
     description:
       'AetherSync AI pairs an autonomous coding agent with a local-first IDE: multi-file edits, a sandboxed terminal, and your choice of frontier or local models.',
@@ -58,6 +69,7 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: '/icon.svg',
+    apple: '/apple-icon.png',
   },
   robots: {
     index: true,
@@ -91,9 +103,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   /**
-   * Structured data. `@graph` keeps the three entities cross-referenced so
+   * Site-wide structured data. `@graph` keeps the entities cross-referenced so
    * Google resolves the app, the publisher and the site as one knowledge unit
-   * rather than three unrelated blobs.
+   * rather than several unrelated blobs.
+   *
+   * `SiteNavigationElement` publishes the same hierarchy the header renders —
+   * it is the machine-readable half of the signal that earns search sitelinks.
    */
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -101,15 +116,21 @@ export default function RootLayout({
       {
         '@type': 'SoftwareApplication',
         '@id': `${SITE_URL}/#software`,
-        name: 'AetherSync IDE',
-        alternateName: ['AetherSync AI', 'AetherSync AI IDE', 'AetherSync Desktop'],
+        name: PRODUCT_NAME,
+        alternateName: [
+          'AetherSync AI',
+          'AetherSync',
+          'Aethersync IDE',
+          'AetherSync AI IDE',
+          'AetherSync Desktop',
+        ],
         operatingSystem: 'Windows 10, Windows 11, Linux',
         applicationCategory: 'DeveloperApplication',
         applicationSubCategory: 'Integrated Development Environment',
         description:
           'AetherSync IDE is a local-first autonomous AI coding agent and integrated development environment with multi-file refactoring, a sandboxed terminal and multi-provider model support.',
         url: SITE_URL,
-        downloadUrl: `${SITE_URL}/download`,
+        downloadUrl: absoluteUrl('/download'),
         softwareVersion: '0.1.0',
         featureList: [
           'Autonomous multi-file refactoring agent',
@@ -130,19 +151,53 @@ export default function RootLayout({
         '@type': 'Organization',
         '@id': `${SITE_URL}/#organization`,
         name: 'AetherSync',
-        alternateName: 'AetherSync Technology',
+        legalName: ORG_NAME,
+        alternateName: ['AetherSync Technology', 'Aethersync', 'AetherSync AI'],
         url: SITE_URL,
-        logo: `${SITE_URL}/icon.svg`,
-        sameAs: ['https://github.com/usman4116', 'https://theaethersync.com'],
+        logo: {
+          '@type': 'ImageObject',
+          '@id': `${SITE_URL}/#logo`,
+          url: absoluteUrl('/aethersync-mark.png'),
+          contentUrl: absoluteUrl('/aethersync-mark.png'),
+          caption: 'AetherSync',
+        },
+        image: { '@id': `${SITE_URL}/#logo` },
+        description:
+          'AetherSync Technology builds AetherSync IDE and AetherSync AI — local-first autonomous developer platforms.',
+        founder: {
+          '@type': 'Person',
+          name: 'Muhammad Usman Farhan',
+          jobTitle: 'Founder & CEO',
+          url: absoluteUrl('/about'),
+        },
+        foundingLocation: {
+          '@type': 'Place',
+          address: { '@type': 'PostalAddress', addressCountry: 'PK' },
+        },
+        sameAs: [
+          GITHUB_URL,
+          GROUP_URL,
+          'https://x.com/aethersync',
+          'https://www.linkedin.com/company/aethersync',
+        ],
       },
       {
         '@type': 'WebSite',
         '@id': `${SITE_URL}/#website`,
-        name: 'AetherSync AI',
+        name: SITE_NAME,
+        alternateName: ['AetherSync IDE', 'Aethersync AI'],
         url: SITE_URL,
         publisher: { '@id': `${SITE_URL}/#organization` },
         inLanguage: 'en-US',
       },
+      ...INDEXABLE_ROUTES.filter((route) => route.path !== '/').map((route) => ({
+        '@type': 'SiteNavigationElement',
+        '@id': `${SITE_URL}/#nav-${route.path.replace(/\//g, '')}`,
+        name: route.label,
+        description: route.blurb,
+        url: absoluteUrl(route.path),
+        isPartOf: { '@id': `${SITE_URL}/#website` },
+      })),
     ],
   };
 

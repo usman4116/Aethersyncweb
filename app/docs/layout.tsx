@@ -1,25 +1,23 @@
 import type { Metadata } from 'next';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { buildMetadata, webPageJsonLd } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
+  path: '/docs',
+  type: 'article',
   title: 'Documentation — Install, Configure & Prompt',
+  ogTitle: 'AetherSync IDE Documentation — Install, Configure & Prompt',
   description:
     'Official AetherSync IDE documentation: quickstart, advanced Linux CLI installation, agent prompting practices, keyboard shortcuts and FAQs for AetherSync AI.',
   keywords: [
     'AetherSync IDE documentation',
+    'Aethersync IDE docs',
     'AetherSync AI docs',
     'AetherSync install guide',
     'AI agent prompting guide',
     'AetherSync keyboard shortcuts',
   ],
-  openGraph: {
-    title: 'AetherSync IDE Documentation — Install, Configure & Prompt',
-    description:
-      'Everything required to run the AetherSync AI autonomous coding environment locally, from a first install to advanced agent prompting.',
-    url: '/docs',
-    type: 'article',
-  },
-  alternates: { canonical: '/docs' },
-};
+});
 
 /**
  * FAQPage structured data mirrors the accordion in `page.tsx`. Kept here (a
@@ -67,6 +65,14 @@ const faqJsonLd = {
 export default function DocsLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <JsonLd
+        data={webPageJsonLd({
+          path: '/docs',
+          name: 'AetherSync IDE Documentation',
+          description:
+            'Official AetherSync IDE documentation: quickstart, advanced Linux CLI installation, agent prompting practices, keyboard shortcuts and FAQs.',
+        })}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}

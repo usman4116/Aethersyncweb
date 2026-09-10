@@ -5,27 +5,26 @@ import { Section } from '@/components/layout/Section';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Reveal } from '@/components/ui/Reveal';
 import { Check, Download, Globe, ShieldCheck, Terminal, Zap } from 'lucide-react';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { RelatedLinks } from '@/components/seo/RelatedLinks';
+import { buildMetadata, webPageJsonLd } from '@/lib/seo';
 
-export const metadata = {
+export const metadata = buildMetadata({
+  path: '/download',
   title: 'Download AetherSync IDE for Windows & Linux',
+  ogTitle: 'Download AetherSync IDE — Free AI Code Editor for Windows & Linux',
   description:
     'Download AetherSync AI Desktop v0.1.0 free for Windows 10/11 and Linux (x64). A local-first autonomous AI coding agent and IDE — signed binaries, zero telemetry, works offline.',
   keywords: [
     'download AetherSync IDE',
+    'Aethersync IDE download',
     'AetherSync AI download',
     'AetherSync Desktop',
     'AI code editor download',
     'free AI IDE Windows',
     'AI IDE Linux',
   ],
-  openGraph: {
-    title: 'Download AetherSync IDE — Free AI Code Editor for Windows & Linux',
-    description: 'Download AetherSync AI Desktop v0.1.0 free for Windows 10/11 and Linux (x64). A local-first autonomous AI coding agent and IDE — signed binaries, zero telemetry, works offline.',
-    url: '/download',
-    type: 'website',
-  },
-  alternates: { canonical: '/download' },
-};
+});
 
 const WIN_DOWNLOAD =
   'https://github.com/usman4116/Async-Login/releases/latest/download/AetherSync-Desktop-0.1.0-x64.exe';
@@ -62,9 +61,18 @@ export default function DownloadPage() {
   return (
     <div className="relative min-h-screen text-foreground">
       <Navbar />
+      <JsonLd
+        data={webPageJsonLd({
+          path: '/download',
+          name: 'Download AetherSync IDE',
+          description:
+            'Download AetherSync AI Desktop v0.1.0 free for Windows 10/11 and Linux x64 — signed binaries, zero telemetry, works offline.',
+        })}
+      />
 
       <main>
         <PageHeader
+          path="/download"
           eyebrow="Official distribution builds — v0.1.0"
           title="Download AetherSync Desktop."
           description="Run the autonomous AI IDE on your own workstation. Pick your operating system below."
@@ -237,6 +245,7 @@ export default function DownloadPage() {
             ))}
           </dl>
         </Section>
+        <RelatedLinks path="/download" />
       </main>
 
       <Footer />

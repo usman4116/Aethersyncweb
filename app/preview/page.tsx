@@ -7,25 +7,24 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { Section } from '@/components/layout/Section';
 import { Button } from '@/components/ui/Button';
 import { ThemedShot } from '@/components/ui/ShotFrame';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { RelatedLinks } from '@/components/seo/RelatedLinks';
+import { buildMetadata, webPageJsonLd } from '@/lib/seo';
 
-export const metadata = {
-  title: 'Live Preview — Try the IDE in Your Browser',
+export const metadata = buildMetadata({
+  path: '/preview',
+  title: 'Live Preview — Try AetherSync IDE in Your Browser',
+  ogTitle: 'Live Preview — Try the AetherSync IDE Workspace in Your Browser',
   description:
     'Test drive the AetherSync AI workspace without installing anything: browse the file tree, switch editor tabs, run terminal commands and prompt the autonomous agent.',
   keywords: [
     'AetherSync IDE preview',
+    'Aethersync IDE demo',
     'AetherSync AI demo',
     'try AI IDE online',
     'AI code editor demo',
   ],
-  openGraph: {
-    title: 'Live Preview — Try the AetherSync IDE Workspace in Your Browser',
-    description: 'Test drive the AetherSync AI workspace without installing anything: browse the file tree, switch editor tabs, run terminal commands and prompt the autonomous agent.',
-    url: '/preview',
-    type: 'website',
-  },
-  alternates: { canonical: '/preview' },
-};
+});
 
 const DOWNLOAD_LINK =
   'https://github.com/usman4116/Async-Login/releases/latest/download/AetherSync-Desktop-0.1.0-x64.exe';
@@ -34,9 +33,18 @@ export default function PreviewPage() {
   return (
     <div className="relative min-h-screen text-foreground">
       <Navbar />
+      <JsonLd
+        data={webPageJsonLd({
+          path: '/preview',
+          name: 'AetherSync IDE Live Preview',
+          description:
+            'Test drive the AetherSync AI workspace in your browser: file tree, editor tabs, terminal commands and the autonomous agent.',
+        })}
+      />
 
       <main>
         <PageHeader
+          path="/preview"
           eyebrow="Full interactive demo"
           title="Test drive the AetherSync workspace."
           description="Interact with the Monaco-style editor, the terminal runner and the agent copilot directly in this live simulation — no install required."
@@ -116,6 +124,7 @@ export default function PreviewPage() {
             </a>
           </div>
         </Section>
+        <RelatedLinks path="/preview" />
       </main>
 
       <Footer />

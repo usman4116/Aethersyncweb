@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Download, Github, Globe, Linkedin, ShieldCheck, Twitter } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
+import { GITHUB_URL, GROUP_URL, NAV_GROUPS, SITE_URL } from '@/lib/site';
 import { TermsModal } from './TermsModal';
 
 const WIN_DOWNLOAD =
@@ -11,45 +12,11 @@ const WIN_DOWNLOAD =
 const LINUX_DOWNLOAD =
   'https://github.com/usman4116/Async-Login/releases/latest/download/AetherSync-Desktop-0.1.0-linux-x64.tar.gz';
 
-const columns = [
-  {
-    title: 'Product',
-    links: [
-      { label: 'Features', href: '/features' },
-      { label: 'Live workspace preview', href: '/preview' },
-      { label: 'Model providers', href: '/providers' },
-      { label: 'Download', href: '/download' },
-    ],
-  },
-  {
-    title: 'Developers',
-    links: [
-      { label: 'Documentation', href: '/docs' },
-      { label: 'Quickstart', href: '/docs#quickstart' },
-      { label: 'Keyboard shortcuts', href: '/docs#shortcuts' },
-      { label: 'Design system', href: '/design-system' },
-    ],
-  },
-  {
-    title: 'Company',
-    links: [
-      { label: 'About', href: '/about' },
-      { label: 'Aethersync group', href: 'https://theaethersync.com', external: true },
-      { label: 'Web login portal', href: 'https://login.theaethersync.com/login', external: true },
-      {
-        label: 'GitHub releases',
-        href: 'https://github.com/usman4116/Async-Login/releases',
-        external: true,
-      },
-    ],
-  },
-];
-
 const socials = [
-  { label: 'GitHub', href: 'https://github.com/usman4116', icon: Github },
+  { label: 'GitHub', href: GITHUB_URL, icon: Github },
   { label: 'X', href: 'https://x.com/aethersync', icon: Twitter },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/company/aethersync', icon: Linkedin },
-  { label: 'Website', href: 'https://theaethersync.com', icon: Globe },
+  { label: 'Website', href: GROUP_URL, icon: Globe },
 ];
 
 export function Footer() {
@@ -69,7 +36,10 @@ export function Footer() {
             </Link>
 
             <p className="mt-4 max-w-xs text-[0.8125rem] leading-relaxed text-text-secondary">
-              An autonomous AI IDE and coding-agent workspace built for speed, privacy and
+              <Link href="/features" className="underline-offset-2 hover:underline">
+                AetherSync IDE
+              </Link>{' '}
+              is an autonomous AI IDE and coding-agent workspace built for speed, privacy and
               precision.
             </p>
 
@@ -93,16 +63,26 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Link columns */}
-          {columns.map((col) => (
-            <nav key={col.title} aria-label={col.title}>
-              <h2 className="kicker">{col.title}</h2>
+          {/*
+            Link columns come from the same `NAV_GROUPS` the header renders, so
+            the footer can never fall out of step with the main navigation.
+          */}
+          {NAV_GROUPS.map((group) => (
+            <nav key={group.title} aria-label={group.title}>
+              <h2 className="kicker">
+                <Link
+                  href={group.path}
+                  className="transition-colors duration-300 ease-cine hover:text-foreground"
+                >
+                  {group.title}
+                </Link>
+              </h2>
               <ul className="mt-5 flex flex-col gap-3">
-                {col.links.map((link) => (
-                  <li key={link.label}>
-                    {'external' in link && link.external ? (
+                {group.items.map((link) => (
+                  <li key={link.path}>
+                    {link.external ? (
                       <a
-                        href={link.href}
+                        href={link.path}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-[0.8125rem] text-text-secondary transition-colors duration-300 ease-cine hover:text-foreground"
@@ -111,7 +91,7 @@ export function Footer() {
                       </a>
                     ) : (
                       <Link
-                        href={link.href}
+                        href={link.path}
                         className="text-[0.8125rem] text-text-secondary transition-colors duration-300 ease-cine hover:text-foreground"
                       >
                         {link.label}
@@ -126,7 +106,12 @@ export function Footer() {
 
         {/* Platform badges */}
         <div className="flex flex-col gap-4 border-b border-border py-8 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-label text-muted">Download the desktop app</p>
+          <p className="text-label text-muted">
+            Download the{' '}
+            <Link href="/download" className="text-foreground underline-offset-2 hover:underline">
+              AetherSync IDE desktop app
+            </Link>
+          </p>
           <div className="flex flex-wrap gap-2">
             <a
               href={WIN_DOWNLOAD}
@@ -148,7 +133,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-micro text-muted">
-            &copy; {new Date().getFullYear()} AetherSync. All rights reserved.
+            &copy; {new Date().getFullYear()} AetherSync Technology. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-micro text-muted">
             <span className="inline-flex items-center gap-1.5">
@@ -161,7 +146,12 @@ export function Footer() {
             >
               Terms &amp; privacy
             </button>
-            <span className="font-mono">www.ai.aethersync.com</span>
+            <a
+              href={SITE_URL}
+              className="font-mono transition-colors duration-300 ease-cine hover:text-foreground"
+            >
+              ai.theaethersync.com
+            </a>
           </div>
         </div>
       </div>

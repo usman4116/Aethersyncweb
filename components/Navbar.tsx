@@ -23,88 +23,22 @@ import {
 import { Button } from '@/components/ui/Button';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { Logo } from '@/components/ui/Logo';
+import { GITHUB_URL, LOGIN_URL, NAV_GROUPS, PRIMARY_NAV } from '@/lib/site';
 import { cn } from '@/lib/utils';
 
-const SIGN_IN = 'https://login.theaethersync.com/login';
-const GITHUB = 'https://github.com/usman4116';
-
-type MenuItem = {
-  href: string;
-  label: string;
-  desc: string;
-  icon: typeof Cpu;
-  external?: boolean;
+/** Icons live here, not in `lib/site.ts`, so the route table stays framework-free. */
+const ICONS: Record<string, typeof Cpu> = {
+  '/features': Cpu,
+  '/features#terminal': SquareTerminal,
+  '/preview': MonitorPlay,
+  '/providers': Boxes,
+  '/docs': BookOpen,
+  '/docs#quickstart': Rocket,
+  '/docs#shortcuts': Keyboard,
+  '/design-system': SwatchBook,
+  '/about': ShieldCheck,
+  '/download': Download,
 };
-
-type NavEntry =
-  | { kind: 'link'; href: string; label: string }
-  | { kind: 'menu'; label: string; items: MenuItem[] };
-
-const NAV: NavEntry[] = [
-  {
-    kind: 'menu',
-    label: 'Product',
-    items: [
-      {
-        href: '/preview',
-        label: 'Desktop workspace',
-        desc: 'Editor, explorer and agent panel in one shell.',
-        icon: MonitorPlay,
-      },
-      {
-        href: '/features',
-        label: 'Autonomous agent',
-        desc: 'Multi-file edits with reviewable diffs.',
-        icon: Cpu,
-      },
-      {
-        href: '/features#terminal',
-        label: 'Sandboxed terminal',
-        desc: 'Native PTY shells behind permission guards.',
-        icon: SquareTerminal,
-      },
-      {
-        href: '/providers',
-        label: 'Model providers',
-        desc: 'Bring your own keys, or run fully offline.',
-        icon: Boxes,
-      },
-    ],
-  },
-  { kind: 'link', href: '/features', label: 'Features' },
-  {
-    kind: 'menu',
-    label: 'Developers',
-    items: [
-      {
-        href: '/docs',
-        label: 'Documentation',
-        desc: 'Install, configure and prompt the agent.',
-        icon: BookOpen,
-      },
-      {
-        href: '/docs#quickstart',
-        label: 'Quickstart',
-        desc: 'From download to first agent run.',
-        icon: Rocket,
-      },
-      {
-        href: '/docs#shortcuts',
-        label: 'Keyboard shortcuts',
-        desc: 'Command palette and editor bindings.',
-        icon: Keyboard,
-      },
-      {
-        href: '/design-system',
-        label: 'Design system',
-        desc: 'Tokens, type scale and UI primitives.',
-        icon: SwatchBook,
-      },
-    ],
-  },
-  { kind: 'link', href: '/download', label: 'Download' },
-  { kind: 'link', href: '/about', label: 'About' },
-];
 
 export function Navbar() {
   const pathname = usePathname();
@@ -144,8 +78,10 @@ export function Navbar() {
     };
   }, []);
 
-  const isActive = (href: string) =>
-    href === '/' ? pathname === '/' : pathname.startsWith(href.split('#')[0]);
+  const isActive = (href: string) => {
+    const base = href.split('#')[0];
+    return base === '/' ? pathname === '/' : pathname === base || pathname.startsWith(`${base}/`);
+  };
 
   return (
     <header
@@ -161,7 +97,11 @@ export function Navbar() {
         className="mx-auto flex h-16 w-full max-w-shell items-center gap-6 px-5 sm:px-6 lg:px-8"
       >
         {/* Brand */}
-        <Link href="/" className="group flex shrink-0 items-center gap-2.5">
+        <Link
+          href="/"
+          aria-label="AetherSync IDE — home"
+          className="group flex shrink-0 items-center gap-2.5"
+        >
           <Logo
             size={30}
             className="transition-transform duration-500 ease-cine group-hover:-rotate-[7deg]"
@@ -174,60 +114,79 @@ export function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop nav */}
+        {/*
+          Desktop nav. The dropdown panels stay mounted and are hidden with CSS
+          rather than unmounted — conditionally rendering them kept every
+          secondary link out of the served HTML, so crawlers saw a site with
+          only three internal links.
+        */}
         <nav className="hidden flex-1 items-center gap-1 lg:flex" aria-label="Main">
-          {NAV.map((entry) =>
-            entry.kind === 'link' ? (
-              <Link
-                key={entry.label}
-                href={entry.href}
-                className={cn(
-                  'rounded-md px-3 py-2 text-[0.8125rem] font-medium transition-colors duration-300 ease-cine',
-                  isActive(entry.href)
-                    ? 'text-foreground'
-                    : 'text-text-secondary hover:text-foreground'
-                )}
-              >
-                {entry.label}
-              </Link>
-            ) : (
-              <div key={entry.label} className="relative">
+          {NAV_GROUPS.map((group) => {
+            const open = openMenu === group.title;
+            return (
+              <div key={group.title} className="relative">
                 <button
                   type="button"
-                  aria-expanded={openMenu === entry.label}
-                  onClick={() => setOpenMenu(openMenu === entry.label ? null : entry.label)}
-                  onMouseEnter={() => setOpenMenu(entry.label)}
+                  aria-expanded={open}
+                  onClick={() => setOpenMenu(open ? null : group.title)}
+                  onMouseEnter={() => setOpenMenu(group.title)}
                   className={cn(
                     'flex items-center gap-1 rounded-md px-3 py-2 text-[0.8125rem] font-medium transition-colors duration-300 ease-cine',
-                    openMenu === entry.label
-                      ? 'text-foreground'
-                      : 'text-text-secondary hover:text-foreground'
+                    open ? 'text-foreground' : 'text-text-secondary hover:text-foreground'
                   )}
                 >
-                  {entry.label}
+                  {group.title}
                   <ChevronDown
                     size={13}
-                    className={cn(
-                      'transition-transform duration-300 ease-cine',
-                      openMenu === entry.label && 'rotate-180'
-                    )}
+                    aria-hidden
+                    className={cn('transition-transform duration-300 ease-cine', open && 'rotate-180')}
                   />
                 </button>
 
-                {openMenu === entry.label && (
-                  <div
-                    onMouseLeave={() => setOpenMenu(null)}
-                    className="absolute left-0 top-full w-[30rem] pt-2"
-                  >
-                    <div className="grid grid-cols-2 gap-1 rounded-xl border border-border bg-background-secondary p-2 shadow-panel">
-                      {entry.items.map((item) => (
-                        <Link
-                          key={item.href}
-                          href={item.href}
+                <div
+                  onMouseLeave={() => setOpenMenu(null)}
+                  className={cn(
+                    'absolute left-0 top-full w-[30rem] pt-2 transition-all duration-200 ease-cine',
+                    open
+                      ? 'visible translate-y-0 opacity-100'
+                      : 'invisible -translate-y-1 opacity-0'
+                  )}
+                >
+                  <div className="grid grid-cols-2 gap-1 rounded-xl border border-border bg-background-secondary p-2 shadow-panel">
+                    {group.items.map((item) => {
+                      const Icon = ICONS[item.path] ?? Cpu;
+                      return item.external ? (
+                        <a
+                          key={item.path}
+                          href={item.path}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="group flex gap-3 rounded-lg p-3 transition-colors duration-300 ease-cine hover:bg-surface-hover/70"
                         >
-                          <item.icon
+                          <ArrowUpRight
                             size={16}
+                            aria-hidden
+                            className="mt-0.5 shrink-0 text-muted transition-colors group-hover:text-primary"
+                          />
+                          <span className="min-w-0">
+                            <span className="block text-[0.8125rem] font-semibold text-foreground">
+                              {item.label}
+                            </span>
+                            <span className="mt-0.5 block text-micro leading-snug text-muted">
+                              {item.desc}
+                            </span>
+                          </span>
+                        </a>
+                      ) : (
+                        <Link
+                          key={item.path}
+                          href={item.path}
+                          aria-current={isActive(item.path) ? 'page' : undefined}
+                          className="group flex gap-3 rounded-lg p-3 transition-colors duration-300 ease-cine hover:bg-surface-hover/70"
+                        >
+                          <Icon
+                            size={16}
+                            aria-hidden
                             className="mt-0.5 shrink-0 text-muted transition-colors group-hover:text-primary"
                           />
                           <span className="min-w-0">
@@ -239,11 +198,30 @@ export function Navbar() {
                             </span>
                           </span>
                         </Link>
-                      ))}
-                    </div>
+                      );
+                    })}
                   </div>
-                )}
+                </div>
               </div>
+            );
+          })}
+
+          {/* Flat links to the pages that matter most for search. */}
+          {PRIMARY_NAV.filter((l) => ['/features', '/download', '/about'].includes(l.path)).map(
+            (link) => (
+              <Link
+                key={link.path}
+                href={link.path}
+                aria-current={isActive(link.path) ? 'page' : undefined}
+                className={cn(
+                  'rounded-md px-3 py-2 text-[0.8125rem] font-medium transition-colors duration-300 ease-cine',
+                  isActive(link.path)
+                    ? 'text-foreground'
+                    : 'text-text-secondary hover:text-foreground'
+                )}
+              >
+                {link.label}
+              </Link>
             )
           )}
         </nav>
@@ -251,16 +229,16 @@ export function Navbar() {
         {/* Desktop actions */}
         <div className="ml-auto hidden items-center gap-2 lg:flex">
           <a
-            href={GITHUB}
+            href={GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="GitHub"
+            aria-label="AetherSync on GitHub"
             className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-text-secondary transition-colors duration-300 ease-cine hover:border-border-strong hover:text-foreground"
           >
-            <Github size={15} />
+            <Github size={15} aria-hidden />
           </a>
           <ThemeToggle />
-          <a href={SIGN_IN} target="_blank" rel="noopener noreferrer">
+          <a href={LOGIN_URL} target="_blank" rel="noopener noreferrer">
             <Button variant="ghost" size="sm">
               Sign in
             </Button>
@@ -268,7 +246,7 @@ export function Navbar() {
           <Link href="/download">
             <Button size="sm">
               Launch AetherSync
-              <ArrowUpRight size={14} />
+              <ArrowUpRight size={14} aria-hidden />
             </Button>
           </Link>
         </div>
@@ -283,31 +261,45 @@ export function Navbar() {
             aria-label="Toggle navigation"
             className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-text-secondary"
           >
-            {mobileMenu ? <X size={17} /> : <Menu size={17} />}
+            {mobileMenu ? <X size={17} aria-hidden /> : <Menu size={17} aria-hidden />}
           </button>
         </div>
       </div>
 
-      {/* Mobile drawer */}
+      {/* Mobile drawer — same hierarchy, same labels, same order. */}
       {mobileMenu && (
         <div className="max-h-[calc(100vh-4rem)] overflow-y-auto border-t border-border bg-background px-5 pb-8 pt-4 lg:hidden">
           <nav className="flex flex-col" aria-label="Mobile">
-            {NAV.map((entry) =>
-              entry.kind === 'link' ? (
-                <Link
-                  key={entry.label}
-                  href={entry.href}
-                  className="border-b border-border py-3 text-[0.9375rem] font-semibold text-foreground"
-                >
-                  {entry.label}
-                </Link>
-              ) : (
-                <div key={entry.label} className="border-b border-border py-3">
-                  <p className="kicker mb-3">{entry.label}</p>
-                  <div className="flex flex-col gap-3">
-                    {entry.items.map((item) => (
-                      <Link key={item.href} href={item.href} className="flex items-start gap-3">
-                        <item.icon size={15} className="mt-0.5 shrink-0 text-primary" />
+            {NAV_GROUPS.map((group) => (
+              <div key={group.title} className="border-b border-border py-3">
+                <p className="kicker mb-3">{group.title}</p>
+                <div className="flex flex-col gap-3">
+                  {group.items.map((item) => {
+                    const Icon = ICONS[item.path] ?? Cpu;
+                    return item.external ? (
+                      <a
+                        key={item.path}
+                        href={item.path}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-start gap-3"
+                      >
+                        <ArrowUpRight size={15} aria-hidden className="mt-0.5 shrink-0 text-primary" />
+                        <span>
+                          <span className="block text-[0.875rem] font-semibold text-foreground">
+                            {item.label}
+                          </span>
+                          <span className="block text-micro text-muted">{item.desc}</span>
+                        </span>
+                      </a>
+                    ) : (
+                      <Link
+                        key={item.path}
+                        href={item.path}
+                        aria-current={isActive(item.path) ? 'page' : undefined}
+                        className="flex items-start gap-3"
+                      >
+                        <Icon size={15} aria-hidden className="mt-0.5 shrink-0 text-primary" />
                         <span>
                           <span className="block text-[0.875rem] font-semibold text-foreground">
                             {item.label}
@@ -315,27 +307,27 @@ export function Navbar() {
                           <span className="block text-micro text-muted">{item.desc}</span>
                         </span>
                       </Link>
-                    ))}
-                  </div>
+                    );
+                  })}
                 </div>
-              )
-            )}
+              </div>
+            ))}
           </nav>
 
           <div className="mt-6 flex flex-col gap-2">
             <Link href="/download">
               <Button className="w-full">
-                <Download size={15} /> Download AetherSync
+                <Download size={15} aria-hidden /> Download AetherSync
               </Button>
             </Link>
-            <a href={SIGN_IN} target="_blank" rel="noopener noreferrer">
+            <a href={LOGIN_URL} target="_blank" rel="noopener noreferrer">
               <Button variant="outline" className="w-full">
                 Sign in to the web portal
               </Button>
             </a>
             <p className="mt-2 flex items-center justify-center gap-1.5 text-micro text-muted">
-              <ShieldCheck size={12} className="text-success" /> Local-first — your code never
-              leaves your machine
+              <ShieldCheck size={12} aria-hidden className="text-success" /> Local-first — your code
+              never leaves your machine
             </p>
           </div>
         </div>
